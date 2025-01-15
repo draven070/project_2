@@ -41,9 +41,9 @@ app.use(express.urlencoded({
     limit: "16kb"
 }))
 
+// Serve static files from the "public" directory
+app.use('/public', express.static('public'));
 
-// For Static files configuration
-app.use(express.static("public"))
 
 // Setting up cookie parser
 app.use(cookieParser());

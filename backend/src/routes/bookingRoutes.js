@@ -1,9 +1,9 @@
 import express from "express";
-import { acceptBookingRequest } from "../controllers/bookingControllers.js";
+import { acceptBooking } from "../controllers/bookingControllers.js";
 
 const router = express.Router();
 
 // Guide accepts a booking request
-router.post("/accept/:bookingId", acceptBookingRequest);
+router.post("/accept/:bookingId", acceptBooking);
 
 export default router;

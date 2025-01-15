@@ -34,9 +34,11 @@ console.log(guideEmail)
         // Return the trips data
         return res.status(200).json({
             trips: trips.map((trip) => ({
+                _id:trip._id,
                 location: trip.location,
                 guide: trip.guide,
                 tourist: trip.tourist,
+                status: trip.status,
                 dateFrom: trip.dateFrom,
                 dateTo: trip.dateTo,
                 numPeople: trip.numPeople,

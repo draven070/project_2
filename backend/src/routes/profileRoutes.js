@@ -15,7 +15,7 @@ const router = express.Router();
 // Define routes
 router.get("/profile/:email", getProfileData);
 router.get("/profile", getProfileDataW);
-router.post("/profile", createProfileData);
+router.post("/profile",uploadImages, createProfileData);
 router.post("/changedata/:email", updateProfileData);
 
 export default router;

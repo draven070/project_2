@@ -35,8 +35,10 @@ const getAllHotels = async (req, res) => {
 };
 
 // Update an existing hotel
-const updateHotel = async (req, res) => {
+const updateHotel = async (req,res) => {
     try {
+        console.log("Request Params:", req.params);
+        console.log("Request Body:", req.body);
         const updatedHotel = await Hotel.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedHotel) {
             return res.status(404).json({ message: 'Hotel not found' });

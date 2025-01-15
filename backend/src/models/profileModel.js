@@ -5,6 +5,8 @@ const { Schema, model } = mongoose;
 // Profile Schema
 const profileSchema = new Schema({
 email: { type: String, required: true },
+profileImage:{ type: String, required: true },
+coverImage: { type: String, required: true },
   name: { type: String, required: true },
   location: { type: String, required: true },
   quote: { type: String, required: true },

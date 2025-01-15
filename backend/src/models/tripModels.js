@@ -17,6 +17,11 @@ const tripSchema = new mongoose.Schema({
         type: Date, 
         required: true 
     },
+    status: {
+        type: String,
+        enum: ['pending', 'accepted', 'rejected'],
+        default: 'pending',
+      },
     dateTo: {
          type: Date
          },

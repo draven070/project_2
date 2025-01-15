@@ -1,12 +1,23 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const { Schema, model } = mongoose;
+const notificationSchema = new mongoose.Schema({
+  guideEmail: {
+    type: String,
+    required: true,
+  },
+  touristEmail: {
+    type: String,
+    required: true,
+  },
+  message: {
+    type: String,
+    required: true,
+  },
+  isRead: {
+    type: Boolean,
+    default: false,
+  },
+}, { timestamps: true }); // Automatically adds `createdAt` and `updatedAt` fields
 
-const notificationSchema = new Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "Tourist", required: true },
-  message: { type: String, required: true },
-//   read: { type: Boolean, default: false },
-}, { timestamps: true });
-
-const Notification = model("Notification", notificationSchema);
+const Notification = mongoose.model('Notification', notificationSchema);
 export default Notification;

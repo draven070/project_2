@@ -86,64 +86,66 @@ const updateProfileData = async (req, res) => {
 };
 
 
+// Create or update a profile
 const createProfileData = async (req, res) => {
   try {
-    const { email, name, location, quote, aboutMeTitle, aboutMeContent, languages, activities } = req.body;
+    const {
+      email,
+      name,
+      location,
+      quote,
+      aboutMeTitle,
+      aboutMeContent,
+      languages,
+      activities,
+    } = req.body;
 
-    // Validate required fields
-    if (!name || !location || !quote || !aboutMeTitle || !aboutMeContent || !languages || !activities) {
-      return res.status(400).json({ message: 'All fields are required' });
+    if (!email || !name || !location || !quote || !aboutMeTitle || !aboutMeContent || !languages || !activities) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check if a profile already exists for the given email
-    let existingProfile = await Profile.findOne({ email });
+    const profileImagePath = req.files?.profileImage ? req.files.profileImage[0].path : "";
+    const coverImagePath = req.files?.coverImage ? req.files.coverImage[0].path : "";
 
-    if (existingProfile) {
-      // If a profile already exists, update it
-      existingProfile.name = name;
-      existingProfile.location = location;
-      existingProfile.quote = quote;
-      existingProfile.aboutMeTitle = aboutMeTitle;
-      existingProfile.aboutMeContent = aboutMeContent;
-      existingProfile.languages = languages.split(',').map(language => language.trim()); // Convert to array of strings
-      existingProfile.activities = activities.split(',').map(activity => activity.trim()); // Convert to array of strings
+    const profileData = {
+      email,
+      name,
+      location,
+      quote,
+      aboutMeTitle,
+      aboutMeContent,
+      languages: Array.isArray(languages) ? languages : languages.split(',').map(l => l.trim()),
+      activities: Array.isArray(activities) ? activities : activities.split(',').map(a => a.trim()),
+      profileImage: profileImagePath,
+      coverImage: coverImagePath,
+    };
 
-      // Save the updated profile
-      await existingProfile.save();
+    let profile = await Profile.findOne({ email });
+
+    if (profile) {
+      // Update existing profile
+      Object.assign(profile, profileData);
+      await profile.save();
     } else {
-      // If no profile exists, create a new one
-      existingProfile = new Profile({
-        email,
-        name,
-        location,
-        quote,
-        aboutMeTitle,
-        aboutMeContent,
-        languages: languages.split(',').map(language => language.trim()), // Convert to array of strings
-        activities: activities.split(',').map(activity => activity.trim()), // Convert to array of strings
-      });
-
-      // Save the new profile
-      await existingProfile.save();
+      // Create a new profile
+      profile = new Profile(profileData);
+      await profile.save();
     }
 
-    // Find the user by email and update the 'form' field to 'submitted'
     const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    if (user) {
+      user.form = "submitted";
+      await user.save();
     }
 
-    // Update the 'form' field in the user model to 'submitted'
-    user.form = 'submitted';
-    await user.save();
-
-    res.status(200).json({ message: 'Profile created/updated successfully and form marked as submitted', data: existingProfile });
+    res.status(200).json({ message: "Profile saved successfully", data: profile });
   } catch (error) {
-    console.error('Error creating/updating profile:', error);
-    res.status(500).json({ message: 'Error creating/updating profile', error });
+    console.error("Error creating/updating profile:", error);
+    res.status(500).json({ message: "Error creating/updating profile", error });
   }
 };
+
 
 // Export the controller methods
 
