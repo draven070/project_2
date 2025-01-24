@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function Form() {
     const navigate = useNavigate();
-    const location = useLocation(); // Access the location object
+    const location = useLocation();
     const [locationInput, setLocation] = useState('Kathmandu 44600, Nepal');
     const [dateFrom, setDateFrom] = useState(new Date());
     const [dateTo, setDateTo] = useState(null);
@@ -14,9 +14,8 @@ export default function Form() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
-    // Extract email from URL query string
     const queryParams = new URLSearchParams(location.search);
-    const email = queryParams.get('email'); // Get 'email' query parameter
+    const email = queryParams.get('email');
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -35,7 +34,6 @@ export default function Form() {
         }
     };
 
-    // Function to validate email format
     const isValidEmail = (email) => {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailRegex.test(email);
@@ -44,16 +42,13 @@ export default function Form() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Get the tourist email from localStorage
-        const tourist = localStorage.getItem('email'); 
+        const tourist = localStorage.getItem('email');
 
-        // Make sure tourist email exists in localStorage
         if (!tourist) {
             setError('Tourist email is missing from localStorage.');
             return;
         }
 
-        // Validate the email from URL params
         if (!email || !isValidEmail(email)) {
             setError('The provided email is invalid.');
             return;
@@ -65,8 +60,8 @@ export default function Form() {
             dateTo,
             numPeople,
             priceBid,
-            tourist, // Add tourist email to the trip details
-            guide: email, // Add the email from URL params
+            tourist,
+            guide: email,
         };
 
         try {
@@ -85,65 +80,57 @@ export default function Form() {
             }
 
             const data = await response.json();
-            console.log('Trip created successfully:', data);
             setSuccess(true);
             alert("Your Booking was submitted, you will receive a response soon!");
-            navigate('/'); // Redirect to home or another page if needed
+            navigate('/');
         } catch (error) {
             setError('An error occurred. Please try again.');
-            console.error('Error:', error);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-lg">
-            <h2 className="text-center text-xl font-semibold mb-4 dark:text-white">Create a trip</h2>
-            {error && <p className="text-red-600 mb-4">{error}</p>}
-            {success && <p className="text-green-600 mb-4">Trip created successfully!</p>}
-            <div className="mb-4">
-                <label className="block text-zinc-700 dark:text-zinc-300 mb-2">Where are you going?</label>
-                <div className="relative">
-                    <input
-                        type="text"
-                        name="location"
-                        value={locationInput}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
+        <form onSubmit={handleSubmit} className=" max-w-3xl mx-auto bg-gray-100 dark:bg-gray-900 p-8 rounded-lg shadow-md">
+            <h2 className="text-center text-2xl font-bold mb-6 text-gray-800 dark:text-white">Plan Your Trip</h2>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+            {success && <p className="text-green-500 mb-4">Trip created successfully!</p>}
+
+            <div className="mb-6">
+                <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Destination</label>
+                <input
+                    type="text"
+                    name="location"
+                    value={locationInput}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+            </div>
+
+            <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Start Date</label>
+                    <DatePicker
+                        selected={dateFrom}
+                        onChange={(date) => setDateFrom(date)}
+                        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
-                    <img src="https://placehold.co/20x20" alt="search icon" className="absolute right-3 top-3" />
-                </div>
-            </div>
-            <div className="mb-4 grid grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-zinc-700 dark:text-zinc-300 mb-2">Date from</label>
-                    <div className="relative">
-                        <DatePicker
-                            selected={dateFrom}
-                            onChange={date => setDateFrom(date)}
-                            className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
-                        />
-                        <img src="https://placehold.co/20x20" alt="calendar icon" className="absolute right-3 top-3" />
-                    </div>
                 </div>
                 <div>
-                    <label className="block text-zinc-700 dark:text-zinc-300 mb-2">Date to</label>
-                    <div className="relative">
-                        <DatePicker
-                            selected={dateTo}
-                            onChange={date => setDateTo(date)}
-                            className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
-                        />
-                        <img src="https://placehold.co/20x20" alt="calendar icon" className="absolute right-3 top-3" />
-                    </div>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">End Date</label>
+                    <DatePicker
+                        selected={dateTo}
+                        onChange={(date) => setDateTo(date)}
+                        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
                 </div>
             </div>
-            <div className="mb-4">
-                <label className="block text-zinc-700 dark:text-zinc-300 mb-2">Number of people</label>
+
+            <div className="mb-6">
+                <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Number of Travelers</label>
                 <select
                     name="numPeople"
                     value={numPeople}
                     onChange={handleInputChange}
-                    className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
+                    className="w-full px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 >
                     <option>Just me</option>
                     <option>2 people</option>
@@ -153,17 +140,24 @@ export default function Form() {
                     <option>6 people</option>
                 </select>
             </div>
-            <div className="mb-4">
-                <label className="block text-zinc-700 dark:text-zinc-300 mb-2">Price Bid</label>
+
+            <div className="mb-6">
+                <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Price Bid</label>
                 <input
                     type="text"
                     name="priceBid"
                     value={priceBid}
                     onChange={handleInputChange}
-                    className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
+                    className="w-full px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
             </div>
-            <button type="submit" className=" bg-red-400 hover:bg-red-600 text-white w-full py-2 rounded-lg mb-4">CREATE NEW TRIP</button>
+
+            <button
+                type="submit"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg focus:ring-4 focus:ring-blue-300 focus:outline-none"
+            >
+                Plan Trip
+            </button>
         </form>
     );
 }

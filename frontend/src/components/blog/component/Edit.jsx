@@ -5,31 +5,31 @@ import axios from "axios";
 import { baseUrl } from "../../config";
 
 const Editblog = () => {
-//   const [blogm, setblogm] = useState({});
-//   const { id } = useParams();
-//   const navigate = useNavigate();
+   const [blogm, setblogm] = useState({});
+   const { id } = useParams();
+   const navigate = useNavigate();
 
-//   // fetch blog
-//   const fetchblog = async () => {
-//     const response = await axios.get(`${baseUrl}/blog/${id}`);
-//     setblogm(response.data.data);
-//   };
+   // fetch blog
+   const fetchblog = async () => {
+     const response = await axios.get(`${baseUrl}/blog/${id}`);
+     setblogm(response.data.data);
+   };
 
-//   useEffect(() => {
-//     fetchblog();
-//   }, []);
+   useEffect(() => {
+     fetchblog();
+   }, []);
 
-//   const editblog = async (data) => {
-//     const response = await axios.patch(`${baseUrl}/blog/${id}`, data, {
-//       headers: {
-//         Authorization: localStorage.getItem("token"),
-//       },
-//     });
-//     if (response.status === 200) {
-//       alert("edited sucessfuully");
-//       navigate("/");
-//     }
-//   };
+   const editblog = async (data) => {
+     const response = await axios.patch(`${baseUrl}/blog/${id}`, data, {
+       headers: {
+         Authorization: localStorage.getItem("token"),
+       },
+     });
+     if (response.status === 200) {
+       alert("edited sucessfuully");
+       navigate("/");
+     }
+   };
 
   return (
     <div>

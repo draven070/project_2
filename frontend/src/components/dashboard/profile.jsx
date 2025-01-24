@@ -1,149 +1,142 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom'; // Import useParams to get route parameters
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const Widget = () => {
-  const [profile, setProfile] = useState(null); // State to store profile data
-  const [reviews, setReviews] = useState([]); // State to store reviews
-  const { email } = useParams(); // Get email from route parameters
+  const [profile, setProfile] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const { email } = useParams();
 
-  // Function to fetch profile data from the API based on email parameter
   const fetchProfileData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/profile/profile/${email}`);
-      setProfile(response.data); // Update profile state with API response data
+      setProfile(response.data);
     } catch (error) {
       console.error('Error fetching profile data:', error);
     }
   };
 
-  // Function to add a new review
   const addReview = () => {
-    // Dummy review for testing
     const newReview = {
       id: reviews.length + 1,
-      text: 'Amazing experience with Anupama!',
-      author: 'John Doe',
+      text: 'Wonderful experience!',
+      author: 'Jane Doe',
     };
-
-    // Update reviews state
     setReviews([...reviews, newReview]);
   };
 
-  // useEffect to fetch profile data when component mounts
   useEffect(() => {
     fetchProfileData();
-  }, [email]); // Dependency on email ensures it re-fetches when email parameter changes
+  }, [email]);
 
-  // Render loading message while profile data is being fetched
   if (!profile) {
-    return <p>Loading...</p>;
+    return <div className="flex justify-center items-center h-screen text-xl">Loading...</div>;
   }
 
   return (
-    <div className="h-5xl w-screen mx-auto p-4">
-      <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden">
-        {/* Main content */}
-        <div className="grid md:grid-cols-3 gap-4">
-          {/* Left column */}
-          <div className="md:col-span-2">
-            {/* Profile header */}
-            <div className="relative">
-              <img src={profile.backgroundImage} alt="Profile background" className="w-full h-48 object-cover" />
-              <div className="absolute top-4 left-4 flex items-center">
-                <img src={profile.profileImage} alt="Profile picture" className="w-24 h-24 rounded-full border-4 border-white" />
-                <div className="ml-4 text-white">
-                  <h2 className="text-xl font-bold">{profile.name}</h2>
-                  <p>{profile.location}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Profile description */}
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Profile Description</h3>
-              <blockquote className="italic text-zinc-600 dark:text-zinc-300">{profile.quote}</blockquote>
-            </div>
-
-            {/* About Me, Languages, and Activities sections */}
-            <div className="p-4">
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">About Me</h3>
-                <p className="text-zinc-600 dark:text-zinc-300">{profile.aboutMeContent}</p>
-              </div>
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">Languages</h3>
-                <p className="text-zinc-600 dark:text-zinc-300">{profile.languages.join(', ')}</p>
-              </div>
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">Services Offered</h3>
-                <p className="text-zinc-600 dark:text-zinc-300">{profile.activities.join(', ')}</p>
-              </div>
-            </div>
-
-            {/* Reviews section */}
-            <div className="p-4 bg-white dark:bg-zinc-700 border-t border-zinc-200 dark:border-zinc-600">
-              <div className="flex items-center mb-4">
-                <h3 className="text-lg font-semibold">Reviews</h3>
-              </div>
-
-              {/* List of reviews */}
-              <div>
-                <ul>
-                  {reviews.map((review) => (
-                    <li key={review.id} className="mb-4">
-                      <p className="text-lg text-gray-700 dark:text-gray-300">"{review.text}"</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">- {review.author}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Add review form (example) */}
-              <div className="mt-4">
-                <textarea
-                  placeholder="Write your review here..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                />
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white mt-2"
-                />
-                <button
-                  onClick={addReview}
-                  className="py-2 px-4 mt-4 bg-red-400 text-white rounded-lg hover:bg-red-600 focus:outline-2 focus:outline-dashed focus:ring-red-900 focus:border-red-900"
-                >
-                  Add Review
-                </button>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+      <div className="max-w-5xl mx-auto p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+          {/* Header Section */}
+          <div className="relative">
+            <img
+              src={profile.backgroundImage}
+              alt="Background"
+              className="w-full h-60 object-cover"
+            />
+            <div className="absolute top-6 left-6 flex items-center">
+              <img
+                src={profile.profileImage}
+                
+                alt="Profile"
+             
+                className="w-28 h-28 rounded-full border-2 border-white"
+              />
+              <div className="ml-4">
+                <h1 className="text-2xl font-bold text-white">{profile.name}</h1>
+                <p className="text-gray-200">{profile.location}</p>
               </div>
             </div>
           </div>
 
-          {/* Right column */}
-          <div className="md:col-span-1 bg-white dark:bg-zinc-700 p-4 border border-zinc-200 dark:border-zinc-600">
-            <div className="flex items-center mb-4">
-              <div className="text-lg text-gray-700 dark:text-gray-300">
-                Create a Trip
+          {/* Main Content */}
+          <div className="p-6 grid md:grid-cols-3 gap-6">
+            {/* Left Column */}
+            <div className="md:col-span-2">
+              {/* About Section */}
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">About Me</h2>
+                <p>{profile.aboutMeContent}</p>
+              </div>
+
+              {/* Languages Section */}
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">Languages</h2>
+                <p>{profile.languages.join(', ')}</p>
+              </div>
+
+              {/* Activities Section */}
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">Services Offered</h2>
+                <p>{profile.activities.join(', ')}</p>
+              </div>
+
+              {/* Reviews Section */}
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-4">Reviews</h2>
+                <ul>
+                  {reviews.map((review) => (
+                    <li key={review.id} className="mb-4">
+                      <p className="italic">"{review.text}"</p>
+                      <p className="text-sm text-gray-600">- {review.author}</p>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-4">
+                  <textarea
+                    placeholder="Write your review here..."
+                    className="w-full p-2 border rounded-md mb-2 dark:bg-gray-700 dark:text-gray-200"
+                  ></textarea>
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    className="w-full p-2 border rounded-md mb-2 dark:bg-gray-700 dark:text-gray-200"
+                  />
+                  <button
+                    onClick={addReview}
+                    className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  >
+                    Add Review
+                  </button>
+                </div>
               </div>
             </div>
-            {/* Pass email as a query parameter */}
-            <Link to={`/form?email=${email}`}>
-              <button
-                className="bg-red-400 hover:bg-red-600 text-white w-full py-2 rounded-lg mb-4"
-              >
-                CREATE A TRIP
-              </button>
-            </Link>
 
-            <div className="mt-4">
-              <h4 className="font-semibold">More info</h4>
-              <a href="#" className="text-blue-500 hover:text-blue-700">About TrekSathi</a>
-              <a href="#" className="text-blue-500 hover:text-blue-700 ml-2">Booking Advice</a>
-            </div>
-            <div className="mt-4">
-              <h4 className="font-semibold">Need assistance?</h4>
-              <p className="text-zinc-600 dark:text-zinc-300">Contact our <a href="#" className="text-blue-500 hover:text-blue-700">Customer Support</a> if you need any assistance managing your bookings.</p>
+            {/* Right Column */}
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-4">Actions</h3>
+              <Link to={`/form?email=${email}`}>
+                <button className="w-full py-2 mb-4 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                  Create a Trip
+                </button>
+              </Link>
+
+              <div className="mt-4">
+                <h4 className="font-semibold">More Information</h4>
+                <a href="#" className="text-blue-500 hover:text-blue-700">About TrekSathi</a>
+              </div>
+
+              <div className="mt-4">
+                <h4 className="font-semibold">Need Assistance?</h4>
+                <p>
+                  Contact our{' '}
+                  <a href="#" className="text-blue-500 hover:text-blue-700">
+                    Customer Support
+                  </a>{' '}
+                  for help.
+                </p>
+              </div>
             </div>
           </div>
         </div>

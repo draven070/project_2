@@ -7,39 +7,39 @@ const Widget = () => {
   const defaultBackgroundImage = 'https://placehold.co/600x300';
 
   const [profile, setProfile] = useState({
-    email: '',
     name: '',
     location: '',
+    email: '',
     profileImage: '',
     backgroundImage: '',
-    quote: '',
+    bio: '',
+    expertise: '',
+    toursOffered: '',
     languages: '',
-    activities: '',
   });
 
   const [editMode, setEditMode] = useState(false);
-  const { userId } = useParams(); // Assuming userId is passed as a URL parameter
+  const { guideId } = useParams(); // Assuming `guideId` is passed as a URL parameter
 
-  // Dummy reviews data
   const reviews = [
-    { id: 1, text: 'Great experience!', author: 'John Doe' },
-    { id: 2, text: 'Awesome service!', author: 'Jane Smith' },
-    { id: 3, text: 'Very professional.', author: 'Alice Johnson' },
+    { id: 1, text: 'Amazing tour, highly recommend!', author: 'John Doe' },
+    { id: 2, text: 'Very knowledgeable and professional.', author: 'Jane Smith' },
+    { id: 3, text: 'Made our trip unforgettable!', author: 'Alice Johnson' },
   ];
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const email = localStorage.getItem('email'); // Get email from localStorage
-        const response = await axios.get(`http://localhost:3000/api/profile/profile/${email}`);
+        const email = localStorage.getItem('email'); // Retrieve email from localStorage
+        const response = await axios.get(`http://localhost:3000/api/guide/${email}`);
         setProfile(response.data);
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error fetching guide profile:', error);
       }
     };
 
     fetchProfile();
-  }, []); // Empty dependency array ensures this effect runs only once on component mount
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,13 +53,13 @@ const Widget = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put(`http://localhost:3000/api/profile/profile/${profile.email}`, profile);
+        await axios.put(`http://localhost:3000/api/guide/${profile.email}`, profile);
         alert('Profile updated successfully!');
       } else {
-        await axios.post('http://localhost:3000/api/profile/profile', profile);
-        alert('Initial profile information submitted successfully!');
+        await axios.post('http://localhost:3000/api/guide', profile);
+        alert('Profile created successfully!');
       }
-      setEditMode(false); // Reset edit mode after submission
+      setEditMode(false);
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile');
@@ -67,10 +67,11 @@ const Widget = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
-      <div className="bg-gray-50 dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden">
+    <div className="max-w-5xl mx-auto p-4" id="guide-profile">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
         <div className="grid md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
+            {/* Background and Profile Header */}
             <div className="relative">
               <img
                 src={profile.backgroundImage || defaultBackgroundImage}
@@ -80,70 +81,83 @@ const Widget = () => {
               <div className="absolute top-4 left-4 flex items-center">
                 <img
                   src={profile.profileImage || defaultProfileImage}
-                  alt="Profile picture"
+                  alt="Guide"
                   className="w-24 h-24 rounded-full border-4 border-white"
                 />
                 <div className="ml-4 text-white">
-                  <h2 className="text-xl font-bold">{profile.name}</h2>
+                  <h2 className="text-2xl font-bold">{profile.name || 'Guide Name'}</h2>
                   {profile.location && <p>{profile.location}</p>}
                 </div>
               </div>
             </div>
 
+            {/* Profile Details */}
             <form onSubmit={handleSubmit}>
               <div className="p-4">
-                {profile.quote && (
-                  <div className="mb-4">
-                    <label className="block text-zinc-600 dark:text-zinc-300">Quote</label>
-                    <textarea
-                      name="quote"
-                      value={profile.quote}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                      readOnly={!editMode} // Disable input in view mode
-                    />
-                  </div>
-                )}
-                {profile.languages && (
-                  <div className="mb-4">
-                    <label className="block text-zinc-600 dark:text-zinc-300">Languages</label>
-                    <input
-                      type="text"
-                      name="languages"
-                      value={profile.languages}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                      readOnly={!editMode} // Disable input in view mode
-                    />
-                  </div>
-                )}
-                {profile.activities && (
-                  <div className="mb-4">
-                    <label className="block text-zinc-600 dark:text-zinc-300">Activities</label>
-                    <input
-                      type="text"
-                      name="activities"
-                      value={profile.activities}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                      readOnly={!editMode} // Disable input in view mode
-                    />
-                  </div>
-                )}
+                <div className="mb-4">
+                  <label className="block text-gray-700 dark:text-gray-300">Bio</label>
+                  <textarea
+                    name="bio"
+                    value={profile.bio}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:text-white"
+                    placeholder="Write a brief introduction about yourself..."
+                    readOnly={!editMode}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 dark:text-gray-300">Expertise</label>
+                  <input
+                    type="text"
+                    name="expertise"
+                    value={profile.expertise}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:text-white"
+                    placeholder="E.g., Historical sites, Adventure tours"
+                    readOnly={!editMode}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 dark:text-gray-300">Tours Offered</label>
+                  <textarea
+                    name="toursOffered"
+                    value={profile.toursOffered}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:text-white"
+                    placeholder="List the tours you offer..."
+                    readOnly={!editMode}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 dark:text-gray-300">Languages</label>
+                  <input
+                    type="text"
+                    name="languages"
+                    value={profile.languages}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:text-white"
+                    placeholder="E.g., English, Spanish, French"
+                    readOnly={!editMode}
+                  />
+                </div>
               </div>
+
               <div className="p-4 flex justify-between">
                 {editMode ? (
                   <button
                     type="submit"
-                    className="py-2 px-4 bg-blue-400 hover:bg-blue-700 text-white rounded-lg"
+                    className="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
                   >
-                    Update Profile
+                    Save Changes
                   </button>
                 ) : (
                   <button
                     type="button"
                     onClick={() => setEditMode(true)}
-                    className="py-2 px-4 bg-green-400 hover:bg-green-700 text-white rounded-lg"
+                    className="py-2 px-4 bg-green-500 hover:bg-green-600 text-white rounded-lg"
                   >
                     Edit Profile
                   </button>
@@ -152,24 +166,23 @@ const Widget = () => {
             </form>
           </div>
 
-          <div className="bg-deepPurple-50 md:col-span-1 bg-white dark:bg-zinc-700 p-4 border border-zinc-200 dark:border-zinc-600">
-            <div className="flex items-center mb-4">
-              <div className="text-lg text-gray-700 dark:text-gray-300">Reviews</div>
-            </div>
-            <div className="p-4">
-              {reviews.length > 0 ? (
-                <ul>
-                  {reviews.map((review) => (
-                    <li key={review.id} className="mb-4">
-                      <p className="text-lg text-gray-700 dark:text-gray-300">"{review.text}"</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">- {review.author}</p>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-zinc-600 dark:text-zinc-300">No reviews yet.</p>
-              )}
-            </div>
+          {/* Reviews Section */}
+          <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md shadow">
+            <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-4">
+              Reviews
+            </h3>
+            {reviews.length > 0 ? (
+              <ul>
+                {reviews.map((review) => (
+                  <li key={review.id} className="mb-4">
+                    <p className="text-gray-700 dark:text-gray-300">"{review.text}"</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">- {review.author}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500 dark:text-gray-300">No reviews yet.</p>
+            )}
           </div>
         </div>
       </div>
