@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom'; // Import useParams to get route parameters
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom"; // Import useParams to get route parameters
+import axios from "axios";
 
 const Widget = () => {
   const [profile, setProfile] = useState(null); // State to store profile data
   const [reviews, setReviews] = useState([]); // State to store reviews
   const { email } = useParams(); // Get email from route parameters
-
+console.log("iam here")
   // Function to fetch profile data from the API based on email parameter
   const fetchProfileData = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/profile/profile/${email}`);
+      const response = await axios.get(
+        `http://localhost:3000/api/profile/profile/${email}`
+      );
       setProfile(response.data); // Update profile state with API response data
+      console.log(response.data);
     } catch (error) {
-      console.error('Error fetching profile data:', error);
+      console.error("Error fetching profile data:", error);
     }
   };
 
@@ -22,8 +25,8 @@ const Widget = () => {
     // Dummy review for testing
     const newReview = {
       id: reviews.length + 1,
-      text: 'Amazing experience with Anupama!',
-      author: 'John Doe',
+      text: "Amazing experience with Anupama!",
+      author: "John Doe",
     };
 
     // Update reviews state
@@ -39,7 +42,7 @@ const Widget = () => {
   if (!profile) {
     return <p>Loading...</p>;
   }
-
+console.log(`http://localhost:3000/${profile.coverImage}`)
   return (
     <div className="h-5xl w-screen mx-auto p-4">
       <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden">
@@ -49,9 +52,26 @@ const Widget = () => {
           <div className="md:col-span-2">
             {/* Profile header */}
             <div className="relative">
-              <img src={profile.backgroundImage} alt="Profile background" className="w-full h-48 object-cover" />
+              <img
+                src={
+                  profile.coverImage
+                    ? `http://localhost:3000/${profile.coverImage}`
+                    : defaultBackgroundImage
+                }
+                alt="Profile background"
+                className="w-full h-48 object-cover"
+              />
               <div className="absolute top-4 left-4 flex items-center">
-                <img src={profile.profileImage} alt="Profile picture" className="w-24 h-24 rounded-full border-4 border-white" />
+                
+                <img
+                  src={
+                    profile.profileImage
+                      ? `http://localhost:3000/${profile.profileImage}`
+                      : defaultBackgroundImage
+                  }
+                  alt="Profile picture"
+                  className="w-24 h-24 rounded-full border-4 border-white"
+                />
                 <div className="ml-4 text-white">
                   <h2 className="text-xl font-bold">{profile.name}</h2>
                   <p>{profile.location}</p>
@@ -61,23 +81,33 @@ const Widget = () => {
 
             {/* Profile description */}
             <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Profile Description</h3>
-              <blockquote className="italic text-zinc-600 dark:text-zinc-300">{profile.quote}</blockquote>
+              <h3 className="text-lg font-semibold mb-2">
+                Profile Description
+              </h3>
+              <blockquote className="italic text-zinc-600 dark:text-zinc-300">
+                {profile.quote}
+              </blockquote>
             </div>
 
             {/* About Me, Languages, and Activities sections */}
             <div className="p-4">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-2">About Me</h3>
-                <p className="text-zinc-600 dark:text-zinc-300">{profile.aboutMeContent}</p>
+                <p className="text-zinc-600 dark:text-zinc-300">
+                  {profile.aboutMeContent}
+                </p>
               </div>
               <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-2">Languages</h3>
-                <p className="text-zinc-600 dark:text-zinc-300">{profile.languages.join(', ')}</p>
+                <p className="text-zinc-600 dark:text-zinc-300">
+                  {profile.languages.join(", ")}
+                </p>
               </div>
               <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-2">Services Offered</h3>
-                <p className="text-zinc-600 dark:text-zinc-300">{profile.activities.join(', ')}</p>
+                <p className="text-zinc-600 dark:text-zinc-300">
+                  {profile.activities.join(", ")}
+                </p>
               </div>
             </div>
 
@@ -92,8 +122,12 @@ const Widget = () => {
                 <ul>
                   {reviews.map((review) => (
                     <li key={review.id} className="mb-4">
-                      <p className="text-lg text-gray-700 dark:text-gray-300">"{review.text}"</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">- {review.author}</p>
+                      <p className="text-lg text-gray-700 dark:text-gray-300">
+                        "{review.text}"
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        - {review.author}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -129,21 +163,29 @@ const Widget = () => {
             </div>
             {/* Pass email as a query parameter */}
             <Link to={`/form?email=${email}`}>
-              <button
-                className="bg-red-400 hover:bg-red-600 text-white w-full py-2 rounded-lg mb-4"
-              >
+              <button className="bg-red-400 hover:bg-red-600 text-white w-full py-2 rounded-lg mb-4">
                 CREATE A TRIP
               </button>
             </Link>
 
             <div className="mt-4">
               <h4 className="font-semibold">More info</h4>
-              <a href="#" className="text-blue-500 hover:text-blue-700">About TrekSathi</a>
-              <a href="#" className="text-blue-500 hover:text-blue-700 ml-2">Booking Advice</a>
+              <a href="#" className="text-blue-500 hover:text-blue-700">
+                About TrekSathi
+              </a>
+              <a href="#" className="text-blue-500 hover:text-blue-700 ml-2">
+                Booking Advice
+              </a>
             </div>
             <div className="mt-4">
               <h4 className="font-semibold">Need assistance?</h4>
-              <p className="text-zinc-600 dark:text-zinc-300">Contact our <a href="#" className="text-blue-500 hover:text-blue-700">Customer Support</a> if you need any assistance managing your bookings.</p>
+              <p className="text-zinc-600 dark:text-zinc-300">
+                Contact our{" "}
+                <a href="#" className="text-blue-500 hover:text-blue-700">
+                  Customer Support
+                </a>{" "}
+                if you need any assistance managing your bookings.
+              </p>
             </div>
           </div>
         </div>

@@ -38,14 +38,22 @@ const Topuser = () => {
               <div className="rounded-t-lg h-24 overflow-hidden">
                 <img
                   className="object-cover object-top w-full h-full"
-                  src={profile.backgroundImage}
+                  src={
+                    profile.coverImage
+                      ? `http://localhost:3000/${profile.coverImage}`
+                      : defaultBackgroundImage
+                  }
                   alt="Background"
                 />
               </div>
               <div className="mx-auto w-20 h-20 relative -mt-12 border-4 border-white rounded-full overflow-hidden">
                 <img
                   className="object-cover object-center w-full h-full"
-                  src={profile.profileImage}
+                  src={
+                    profile.profileImage
+                      ? `http://localhost:3000/${profile.profileImage}`
+                      : defaultBackgroundImage
+                  }
                   alt="Profile"
                 />
               </div>
