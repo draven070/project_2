@@ -60,35 +60,52 @@ function Login() {
       </div>
       <div className="md:w-1/3 max-w-sm">
         <form onSubmit={handleLogin}>
-          <div className="text-center md:text-left">
-            <label className="mr-1">Sign in for user</label>
-          </div>
+        
+        <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
+          
+            Signin as a Guide
+            </h2>
+            <div className="mb-4">
           <input
-            className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
             type="text"
             placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          </div>
+          <div className="mb-4">
           <input
-            className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          </div>
           {error && <div className="text-red-500 mt-2">{error}</div>}
           <button
-            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
             type="submit"
           >
-            Sign In
+            
+            Login In
           </button>
+          <p className="text-sm text-gray-600 mt-4 text-center">
+          Don't have an account? 
+          <button
+            onClick={() => navigate("/register")}
+            className="text-blue-500 hover:underline"
+          >
+            Register
+          </button>
+        </p>
         </form>
       </div>
     </section>
+    
   );
 }
 

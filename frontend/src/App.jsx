@@ -18,8 +18,8 @@ import Form from './components/form/form'
 import Sidebar from './components/dashboard/sidebar'
 import Profileform from './components/form/profileForm'
 import Notification from './components/notification/notification.jsx'
-
-
+import Hotel from './components/hotel/hotel.jsx'
+import Tourist from './components/dashboard/tourist.jsx'
 import KYCForm from './components/form/kyc'
 import Dash from './components/dashboard/dash'
 
@@ -59,6 +59,8 @@ export default function App() {
         <Route path="/profileform" element={<Profileform/>}/>
         <Route path='/request' element={<Request/>}/>
         <Route path='/notification' element={<Notification/>}/>
+        <Route path='/tourist' element={<Tourist/>}/>
+        <Route path='/hotel' element={<Hotel/>}/>
     </Routes>
     <Footer/>
     </BrowserRouter>

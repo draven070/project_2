@@ -94,4 +94,55 @@ const logoutTourist = async (req, res) => {
   }
 };
 
-export { signupTourist, loginTourist, logoutTourist };
+
+const updateTourist = async (req, res) => {
+  try {
+    const { touristId, fullName, currentPassword, newPassword } = req.body;
+
+    if (!touristId) {
+      return res.status(400).json({ message: "Tourist ID is required" });
+    }
+
+    const tourist = await Tourist.findById(touristId);
+
+    if (!tourist) {
+      return res.status(404).json({ message: "Tourist not found" });
+    }
+
+    // Update name if provided
+    if (fullName) {
+      tourist.fullName = fullName;
+    }
+
+    // Change password if currentPassword and newPassword are provided
+    if (currentPassword && newPassword) {
+      const isPasswordCorrect = await bcrypt.compare(
+        currentPassword,
+        tourist.password
+      );
+
+      if (!isPasswordCorrect) {
+        return res.status(400).json({ message: "Incorrect current password" });
+      }
+
+      const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+      tourist.password = hashedNewPassword;
+    }
+
+    await tourist.save();
+
+    res.status(200).json({
+      message: "Tourist updated successfully",
+      fullName: tourist.fullName,
+      email: tourist.email,
+      role: tourist.role,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+export { signupTourist, loginTourist, logoutTourist , updateTourist };

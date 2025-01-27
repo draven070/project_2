@@ -119,7 +119,7 @@ console.log("iam heree")
         <input
           type="text"
           name="languages"
-          placeholder="Languages (comma-separated)"
+          placeholder="Languages"
           value={formData.languages}
           onChange={handleChange}
           required
@@ -128,7 +128,7 @@ console.log("iam heree")
         <input
           type="text"
           name="activities"
-          placeholder="Activities (comma-separated)"
+          placeholder="Activities"
           value={formData.activities}
           onChange={handleChange}
           required

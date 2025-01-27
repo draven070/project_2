@@ -21,7 +21,7 @@ const Hero = () => {
         </div>
         
         <div className="relative z-10 flex flex-col justify-center items-center h-full text-center">
-          <h1 className="text-5xl font-bold leading-tight mb-4">Welcome to TravelSathi!</h1>
+          <h1 className="text-5xl font-bold leading-tight mb-4">Welcome to YatraSathi!</h1>
           <p className="text-lg text-gray-300 mb-8">Connect with travel mates and experience Nepal like never before</p>
           <button
             onClick={handleGetStarted}
