@@ -80,7 +80,17 @@ function AboutUs() {
       relaxation, or a cultural journey, YatraSathi is here to help you make the
       most of your travels. Let us help you create a journey filled with
       stories, excitement, and memories that will last a lifetime. Are you ready
-      for your next adventure? Let’s trek together!
+      for your next adventure? Let’s trek together!That’s why we offer
+      personalized itineraries to fit your travel preferences. Sustainability:
+      We are committed to making our tours eco-friendly and promoting
+      responsible travel that benefits local communities and the environment.
+      Our guides are experienced, certified, and passionate about the places
+      they lead you to. Tailored Experiences: We understand that no two
+      adventures are the same. That’s why we offer personalized itineraries to
+      fit your travel preferences. Let’s trek together!That’s why we offer
+      personalized itineraries to fit your travel preferences. Sustainability:
+      We are committed to making our tours eco-friendly and promoting
+      responsible travel that benefits local communities and the environment.
     </>
   );
 }

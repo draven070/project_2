@@ -28,6 +28,7 @@ import Singleblog3 from "./components/blog/component/Singleblog/Singleblog3.jsx"
 import Singleblog4 from "./components/blog/component/Singleblog/Singleblog4.jsx";
 import Widget from "./components/dashboard/dash";
 import Request from "./components/request/request";
+import AdminLogin from "./components/login/adminlogin.jsx";
 
 export default function App() {
   return (
@@ -62,6 +63,7 @@ export default function App() {
         <Route path="/notification" element={<Notification />} />
         <Route path="/tourist" element={<Tourist />} />
         <Route path="/hotel" element={<Hotel />} />
+        <Route path="/adminlogin" element={<AdminLogin />} />
       </Routes>
       <Footer />
     </BrowserRouter>
