@@ -1,172 +1,143 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
-const HotelBookingPage = () => {
-  const [hotels, setHotels] = useState([]);
-  const [selectedHotel, setSelectedHotel] = useState(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    checkIn: "",
-    checkOut: "",
-  });
+const HotelList = () => {
+  const [location, setLocation] = useState(""); // Store user input location
+  const [hotels, setHotels] = useState([]); // All hotels data
+  const [recommendedHotels, setRecommendedHotels] = useState([]); // Filtered hotels based on recommendation
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch hotels from the backend
-  useEffect(() => {
-    const fetchHotels = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/hotel/get");
-        setHotels(response.data); // Update state with the fetched hotels
-      } catch (error) {
-        console.error("Error fetching hotels:", error);
+  // List of unique locations
+  const locations = [
+    "Pokhara, Nepal",
+    "Lalitpur, Nepal",
+    "Chitwan, Nepal",
+    "Lumbini, Nepal",
+    "Nagarkot, Nepal",
+    "Mechinagar, Nepal",
+    "Ilam, Nepal",
+    "Dharan, Nepal",
+    "Damak, Nepal",
+    
+  ];
+
+  // Fetch all hotels initially
+  const fetchHotels = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:3000/api/hotel"); // API to fetch all hotels
+      if (!response.ok) {
+        throw new Error("Error fetching hotels");
       }
-    };
-    fetchHotels();
-  }, []);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+      const data = await response.json();
+      setHotels(data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleBookingSubmit = async (e) => {
-    e.preventDefault();
-    if (!selectedHotel) {
-      alert("Please select a hotel to book.");
+  // Fetch recommended hotels based on location
+  const fetchRecommendations = async () => {
+    if (!location.trim()) {
+      setError("Please select a location.");
       return;
     }
 
-    const bookingData = {
-      ...formData,
-      hotelId: selectedHotel._id,
-    };
+    setLoading(true);
+    setError(null);
 
     try {
-      console.log("Booking Data:", bookingData);
-      alert(`Booking successful for hotel: ${selectedHotel.name}`);
+      const response = await fetch(`http://localhost:3000/api/recommend?location=${encodeURIComponent(location)}`);
+
+      if (!response.ok) {
+        throw new Error("Error fetching recommendations");
+      }
+
+      const data = await response.json();
+      setRecommendedHotels(data.slice(0, 3)); // Show only top 3 recommendations
     } catch (error) {
-      console.error("Error booking hotel:", error);
-      alert("Failed to book the hotel. Please try again.");
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchHotels();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Hotel Booking</h1>
+    <div className="container mx-auto p-8">
+      <h2 className="text-3xl font-semibold text-center mb-6">Find Hotels Based on Location</h2>
 
-        {/* Hotels List */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-700 mb-4">Available Hotels</h2>
-          {hotels.length > 0 ? (
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {hotels.map((hotel) => (
-                <li
-                  key={hotel._id}
-                  className={`p-6 border rounded-lg shadow-sm cursor-pointer ${
-                    selectedHotel === hotel ? "bg-green-100 border-green-500" : "bg-white"
-                  }`}
-                  onClick={() => setSelectedHotel(hotel)}
+      {/* Dropdown for Location */}
+      <div className="flex justify-center mb-6">
+        <select
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="border rounded-lg p-2 text-lg w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Select a location</option>
+          {locations.map((loc, index) => (
+            <option key={index} value={loc}>
+              {loc}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={fetchRecommendations}
+          className="ml-2 px-6 py-2 bg-green-600 text-white rounded-lg text-lg font-semibold hover:bg-green-700 transition-all"
+        >
+          Search
+        </button>
+      </div>
+
+      {error && <div className="text-center text-xl text-red-600">{error}</div>}
+      {loading && <div className="text-center text-2xl">Loading...</div>}
+
+      {/* Display hotels (Initially All, or Top 3 after Search) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {(recommendedHotels.length > 0 ? recommendedHotels : hotels).map((hotel, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl"
+          >
+       
+            <img
+              src={`http://localhost:5000${hotel.image}` || "https://via.placeholder.com/300"}
+              alt={hotel.hotel_name}
+              className="w-full h-64 object-cover"
+            />
+            <div className="p-6">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+                <a
+                  href={hotel.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:text-blue-700"
                 >
-                  <img
-                    src={hotel.images[0] || "https://via.placeholder.com/150"}
-                    alt={`${hotel.name} image`}
-                    className="w-full h-32 object-cover rounded-md mb-4"
-                  />
-                  <h3 className="text-lg font-bold text-gray-800">{hotel.name}</h3>
-                  <p className="text-sm text-gray-600">
-                    {hotel.location.city}, {hotel.location.country}
-                  </p>
-                  <p className="text-sm text-gray-600">{hotel.location.address}</p>
-                  <p className="text-sm text-gray-600">Price: ${hotel.pricePerNight}/night</p>
-                  <p className="text-sm text-gray-600">Rating: {hotel.rating} ⭐</p>
-                  <p className="text-sm text-gray-600">
-                    Amenities: {hotel.amenities?.join(", ") || "N/A"}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-600">No hotels available at the moment.</p>
-          )}
-        </div>
-
-        {/* Booking Form */}
-        <div className="bg-white p-6 border rounded-lg shadow-sm">
-          <h2 className="text-2xl font-semibold text-gray-700 mb-4">Book a Room</h2>
-          <form onSubmit={handleBookingSubmit} className="space-y-4">
-            <div>
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-green-300"
-              />
+                  {hotel.hotel_name}
+                </a>
+              </h2>
+              <p className="text-gray-600 text-lg mb-2">{hotel.location}</p>
+              <p className="text-gray-600 text-lg mb-2">Rating: {hotel.rating} ⭐</p>
+              <p className="text-gray-600 text-lg mb-2">Price Range: {hotel.price_range}</p>
+              <a
+                href={hotel.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all"
+              >
+                Book Now
+              </a>
             </div>
-            <div>
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-green-300"
-              />
-            </div>
-            <div>
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Your Phone Number"
-                value={formData.phone}
-                onChange={handleInputChange}
-                required
-                className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-green-300"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Check-In Date</label>
-              <input
-                type="date"
-                name="checkIn"
-                value={formData.checkIn}
-                onChange={handleInputChange}
-                required
-                className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-green-300"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Check-Out Date</label>
-              <input
-                type="date"
-                name="checkOut"
-                value={formData.checkOut}
-                onChange={handleInputChange}
-                required
-                className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-green-300"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={!selectedHotel}
-              className={`w-full py-3 px-6 font-semibold text-white rounded-lg shadow-sm ${
-                selectedHotel
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-gray-400 cursor-not-allowed"
-              }`}
-            >
-              Book Now
-            </button>
-          </form>
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default HotelBookingPage;
+export default HotelList;
