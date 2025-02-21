@@ -17,7 +17,7 @@ const touristSchema = mongoose.Schema({
      
      roles:{
         type: String,
-        enum: ['user', 'guide'],
+        enum: ['user', 'admin'],
         default: 'user'
      }
 }, { timestamps: true });

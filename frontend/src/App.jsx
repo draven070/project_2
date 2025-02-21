@@ -21,6 +21,7 @@ import Tourist from "./components/dashboard/tourist.jsx";
 import KYCForm from "./components/form/kyc";
 import Dash from "./components/dashboard/dash";
 
+import PrivateRoute from "./components/PrivateRoute.jsx";
 import Blog from "./components/blog/component/Blog";
 import Singleblog from "./components/blog/component/Singleblog";
 import Widget from "./components/dashboard/dash";
@@ -60,6 +61,15 @@ export default function App() {
         <Route path="/hotel" element={<Hotel />} />
         <Route path="/admin/users" element={<AdminDashboardUsers />} />
         <Route path="/admin/tourists" element={<AdminDashboardTourists />} />
+        <Route
+            path="/admin"
+            element={
+              <PrivateRoute roles={["admin"]}>
+                <AdminDashboardTourists/>
+              </PrivateRoute>
+            }
+          />
+          
       </Routes>
       <Footer />
     </BrowserRouter>
