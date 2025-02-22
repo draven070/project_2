@@ -61,14 +61,14 @@ export default function App() {
         <Route path="/hotel" element={<Hotel />} />
         <Route path="/admin/users" element={<AdminDashboardUsers />} />
         <Route path="/admin/tourists" element={<AdminDashboardTourists />} />
-        <Route
+        {/* <Route
             path="/admin"
             element={
               <PrivateRoute roles={["admin"]}>
                 <AdminDashboardTourists/>
               </PrivateRoute>
             }
-          />
+          /> */}
           
       </Routes>
       <Footer />
