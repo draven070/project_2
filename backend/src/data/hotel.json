@@ -1,0 +1,156 @@
+[
+    {
+      "hotel_name": "Pokhara Grande",
+      "location": "Pokhara, Nepal",
+      "website": "https://www.pokharagrande.com/",
+      "image": "/public/data/images/1.jpg",
+      "rating": "4.5",
+      "price_range": "$100 - $200 per night"
+    },
+    {
+      "hotel_name": "Fish Tail Lodge",
+      "location": "Pokhara, Nepal",
+      "website": "https://www.fishtail.com.np/",
+      "image": "/public/data/images/11.jpg",
+      "rating": "4.4",
+      "price_range": "$120 - $250 per night"
+    },
+    {
+      "hotel_name": "Begnas Lake Resort & Villas",
+      "location": "Pokhara, Nepal",
+      "website": "https://begnaslakeresort.com/",
+      "image": "/public/data/images/3.jpg",
+      "rating": "4.6",
+      "price_range": "$150 - $300 per night"
+    },
+    {
+      "hotel_name": "Dwarika's Resort Dhulikhel",
+      "location": "Dhulikhel, Nepal",
+      "website": "https://dwarikas-dhulikhel.com/",
+      "image": "/public/data/images/4.jpg",
+      "rating": "4.8",
+      "price_range": "$400 - $800 per night"
+    },
+    {
+      "hotel_name": "Hotel Himalaya",
+      "location": "Lalitpur, Nepal",
+      "website": "https://www.hotelhimalaya.com/",
+      "image": "/public/data/images/5.jpg",
+      "rating": "4.3",
+      "price_range": "$80 - $150 per night"
+    },
+    {
+      "hotel_name": "Barahi Jungle Lodge",
+      "location": "Chitwan, Nepal",
+      "website": "https://barahi.com/properties/barahi-jungle-lodge/",
+      "image": "/public/data/images/3.jpg",
+      "rating": "4.7",
+      "price_range": "$300 - $600 per night"
+    },
+    {
+      "hotel_name": "Jungle Safari Resort",
+      "location": "Chitwan, Nepal",
+      "website": "https://www.junglesafariresort.com/",
+      "image": "/public/data/images/12.jpg",
+      "rating": "4.2",
+      "price_range": "$50 - $100 per night"
+    },
+    {
+      "hotel_name": "Bodhi Boutique Hotel",
+      "location": "Lumbini, Nepal",
+      "website": "https://hotelbodhiboutique.com/",
+      "image": "/public/data/images/19.jpg",
+      "rating": "4.5",
+      "price_range": "$70 - $130 per night"
+    },
+    {
+      "hotel_name": "Lumbini Garden Hotel",
+      "location": "Lumbini, Nepal",
+      "website": "https://newcrystalhotels.com/wp/",
+      "image": "/public/data/images/9.jpg",
+      "rating": "4.0",
+      "price_range": "$60 - $120 per night"
+    },
+    {
+      "hotel_name": "Landmark Pokhara",
+      "location": "Pokhara, Nepal",
+      "website": "https://landmarknepal.com/hotels/landmark-pokhara",
+      "image": "/public/data/images/10.jpg",
+      "rating": "4.3",
+      "price_range": "$90 - $180 per night"
+    },
+    {
+      "hotel_name": "Himalayan Front Resort",
+      "location": "Pokhara, Nepal",
+      "website": "https://ktmgh.com/himalayanfront/",
+      "image": "/public/data/images/11.jpg",
+      "rating": "4.4",
+      "price_range": "$100 - $200 per night"
+    },
+    {
+      "hotel_name": "Hotel Marigold",
+      "location": "Nagarkot, Nepal",
+      "website": "https://hotelmarigoldnagarkot.com/",
+      "image": "/public/data/images/12.jpg",
+      "rating": "4.1",
+      "price_range": "$60 - $110 per night"
+    },
+    {
+      "hotel_name": "Sauraha Resort",
+      "location": "Chitwan, Nepal",
+      "website": "https://sauraharesort.com/",
+      "image": "/public/data/images/1.jpg",
+      "rating": "4.0",
+      "price_range": "$25 - $40 per night"
+    },
+    {
+      "hotel_name": "Wildlife Camp",
+      "location": "Chitwan, Nepal",
+      "website": "https://hotelwildlifecamp.com/",
+      "image": "/public/data/images/4.jpg",
+      "rating": "4.1",
+      "price_range": "$37 - $50 per night"
+    },
+      {
+        "hotel_name": "Udaan HMC & Casino (Hotel Mechi Crown)",
+        "location": "Mechinagar, Nepal",
+        "website": "https://udaanhotels.com/our-hotels/udaan-hmc-casino-nepal-hotel-mechi-crown-nepal/",
+        "image": "/public/data/images/15.jpg",
+        "rating": "4.5",
+        "price_range": "$100 - $200 per night"
+      },
+      {
+        "hotel_name": "Hotel Easton Blue",
+        "location": "Ilam, Nepal",
+        "website": "https://www.facebook.com/HotelEastonBlue/",
+        "image": "/public/data/images/1.jpg",
+        "rating": "4.2",
+        "price_range": "$40 - $80 per night"
+      },
+      {
+        "hotel_name": "Nirvana Country Club Health and Golf Resort",
+        "location": "Dharan, Nepal",
+        "website": "https://www.facebook.com/nirvanacountryclub/",
+        "image": "/public/data/images/5.jpg",
+        "rating": "4.0",
+        "price_range": "$60 - $120 per night"
+      },
+      {
+        "hotel_name": "Hotel Sworgalok",
+        "location": "Damak, Nepal",
+        "website": "https://www.tripadvisor.com/Hotel_Review-g18421699-d28151808-Reviews-Hotel_Sworgalok-Damak_Mechi_Zone_Eastern_Region.html",
+        "image": "/public/data/images/18.jpg",
+        "rating": "4.3",
+        "price_range": "$45 - $90 per night"
+      },
+      {
+        "hotel_name": "Khumbu Lodge",
+        "location": "Namche Bazaar, Nepal",
+        "website": "https://khumbulodge.com/",
+        "image": "/public/data/images/19.jpg",
+        "rating": "4.7",
+        "price_range": "$70 - $150 per night"
+      }
+    
+  ]
+  
