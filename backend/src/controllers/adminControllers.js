@@ -57,4 +57,50 @@ const deleteTourist = async (req, res) => {
   }
 };
 
-export { getAllUsers, deleteUser,getAllTourist,deleteTourist };
+const verificationKyc = async (req, res) => {
+  try {
+    const { id } = req.params; // Assuming the user ID is passed as a URL parameter
+    const { formStatus } = req.body; // Assuming the form status is passed in the request body
+    console.log(id);
+
+    // Check if the form status is valid
+    if (!["verified", "unverified"].includes(formStatus)) {
+      return res.status(400).json({
+        message:
+          'Invalid form status. Choose either "verified" or "unverified".',
+      });
+    }
+
+    // Find the user
+    const user = await User.findById({ _id: id });
+
+    // If user is not found
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Update the form status
+    user.form = formStatus;
+
+    // Save the updated user
+    await user.save();
+
+    return res.status(200).json({
+      message: "Form status updated successfully.",
+      updatedUser: user,
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Server error. Please try again later." });
+  }
+};
+
+export {
+  getAllUsers,
+  deleteUser,
+  getAllTourist,
+  deleteTourist,
+  verificationKyc,
+};

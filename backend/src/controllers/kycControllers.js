@@ -2,19 +2,23 @@ import KYC from '../models/kycModels.js';
 
 export const createKYC = async (req, res) => {
   try {
+    console.log("Uploaded Files:", req.files);
+
     const { name, citizenshipNumber } = req.body;
-    const image = req.files.image ? req.files.image[0].filename : null;
+    const profileImage = req.files.profileImage ? req.files.profileImage[0].filename : null; // ✅ Fixed typo
     const citizenshipPhoto = req.files.citizenshipPhoto ? req.files.citizenshipPhoto[0].filename : null;
     const cv = req.files.cv ? req.files.cv[0].filename : null;
 
-    if (!name || !citizenshipNumber || !image || !citizenshipPhoto) {
+    console.log(name, citizenshipNumber, profileImage, citizenshipPhoto);
+
+    if (!name || !citizenshipNumber || !profileImage || !citizenshipPhoto) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
     const newKYC = new KYC({
       name,
       citizenshipNumber,
-      image,
+      profileImage,
       citizenshipPhoto,
       cv,
     });

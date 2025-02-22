@@ -16,9 +16,9 @@ const reviewSchema = new mongoose.Schema({
     ref: 'User', // Reference to User model
     required: true,
   },
-  guide: {
+  Tourist: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Reference to User model
+    ref: 'Tourist', // Reference to User model
     required: true,
   },
 }, { timestamps: true });

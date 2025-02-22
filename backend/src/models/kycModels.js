@@ -8,10 +8,10 @@ const kycSchema = new mongoose.Schema({
      required: true
      },
   citizenshipNumber: { 
-    type: String, 
+    type: Number, 
     required: true
  },
-  image: {
+ profileImage: {
      type: String,
       required: true
      },

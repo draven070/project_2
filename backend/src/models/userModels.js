@@ -34,8 +34,8 @@ const userSchema = new Schema({
   ],
   form: {
     type: String,
-    enum: ['submitted', 'unsubmitted'],
-    default: 'unsubmitted',  // Default value is unsubmitted
+    enum: ['verified', 'unverified'],
+    default: 'unverified',  // Default value is unsubmitted
   }
 }, { timestamps: true });
 
