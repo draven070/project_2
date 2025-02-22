@@ -68,12 +68,12 @@ const AdminDashboardTourists = () => {
                             <td className="border p-2">{user.fullName}</td>
                             <td className="border p-2">{user.email}</td>
                             <td className="border p-2">
-                                <button
+                                {/* <button
                                     className="bg-red-500 text-white px-3 py-1 rounded"
                                     onClick={() => handleDelete(user._id)}
                                 >
                                     Delete
-                                </button>
+                                </button> */}
                             </td>
                         </tr>
                     ))}

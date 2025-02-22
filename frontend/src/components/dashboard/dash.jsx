@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const Widget = () => {
+  
+  const navigate = useNavigate();
   const defaultProfileImage = 'https://placehold.co/100x100';
   const defaultBackgroundImage = 'https://placehold.co/600x300';
 
@@ -18,9 +23,8 @@ const Widget = () => {
   });
 
   const [editMode, setEditMode] = useState(false);
-  const { userId } = useParams(); // Assuming userId is passed as a URL parameter
+  const { userId } = useParams();
 
-  // Dummy reviews data
   const reviews = [
     { id: 1, text: 'Great experience!', author: 'John Doe' },
     { id: 2, text: 'Awesome service!', author: 'Jane Smith' },
@@ -30,16 +34,15 @@ const Widget = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const email = localStorage.getItem('email'); // Get email from localStorage
+        const email = localStorage.getItem('email');
         const response = await axios.get(`http://localhost:3000/api/profile/profile/${email}`);
         setProfile(response.data);
       } catch (error) {
         console.error('Error fetching profile:', error);
       }
     };
-
     fetchProfile();
-  }, []); // Empty dependency array ensures this effect runs only once on component mount
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,40 +56,40 @@ const Widget = () => {
     e.preventDefault();
     try {
       if (editMode) {
-        await axios.put(`http://localhost:3000/api/profile/profile/${profile.email}`, profile);
+        await axios.post(`http://localhost:3000/api/profile/changedata/${profile.email}`, profile);
         alert('Profile updated successfully!');
       } else {
         await axios.post('http://localhost:3000/api/profile/profile', profile);
         alert('Initial profile information submitted successfully!');
       }
-      setEditMode(false); // Reset edit mode after submission
+      setEditMode(false);
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile');
     }
   };
-console.log("iam heere")
+
   return (
     <div className="max-w-5xl mx-auto p-4">
       <div className="bg-gray-50 dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden">
         <div className="grid md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
             <div className="relative">
-            <img
+              <img
                 src={
-                  profile.coverImage
-                    ? `http://localhost:3000/${profile.coverImage}`
+                  profile.backgroundImage
+                    ? `http://localhost:3000/${profile.backgroundImage}`
                     : defaultBackgroundImage
                 }
                 alt="Profile background"
                 className="w-full h-48 object-cover"
               />
               <div className="absolute top-4 left-4 flex items-center">
-              <img
+                <img
                   src={
                     profile.profileImage
                       ? `http://localhost:3000/${profile.profileImage}`
-                      : defaultBackgroundImage
+                      : defaultProfileImage
                   }
                   alt="Profile picture"
                   className="w-24 h-24 rounded-full border-4 border-white"
@@ -98,71 +101,78 @@ console.log("iam heere")
               </div>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="p-4">
-                {profile.quote && (
-                  <div className="mb-4">
-                    <label className="block text-zinc-600 dark:text-zinc-300">Quote</label>
-                    <textarea
-                      name="quote"
-                      value={profile.quote}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                      readOnly={!editMode} // Disable input in view mode
-                    />
-                  </div>
-                )}
-                {profile.languages && (
-                  <div className="mb-4">
-                    <label className="block text-zinc-600 dark:text-zinc-300">Languages</label>
-                    <input
-                      type="text"
-                      name="languages"
-                      value={profile.languages}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                      readOnly={!editMode} // Disable input in view mode
-                    />
-                  </div>
-                )}
-                {profile.activities && (
-                  <div className="mb-4">
-                    <label className="block text-zinc-600 dark:text-zinc-300">Activities</label>
-                    <input
-                      type="text"
-                      name="activities"
-                      value={profile.activities}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                      readOnly={!editMode} // Disable input in view mode
-                    />
-                  </div>
-                )}
+            <form onSubmit={handleSubmit} className="p-4">
+              <div className="mb-4">
+                <label className="block text-zinc-600 dark:text-zinc-300">Quote</label>
+                <textarea
+                  name="quote"
+                  value={profile.quote}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  readOnly={!editMode}
+                />
               </div>
-              <div className="p-4 flex justify-between">
-    {editMode ? (
-      <button
-        type="submit" // Triggers the form's onSubmit handler
-        className="py-2 px-4 bg-blue-400 hover:bg-blue-700 text-white rounded-lg"
-      >
-        Update Profile
-      </button>
-    ) : (
-      <button
-  type="button" // Ensures it's not treated as a submit button
-  onClick={(e) => {
-    e.preventDefault(); // Prevent form submission explicitly
-    setEditMode(true);
-  }}
-  className="py-2 px-4 bg-green-400 hover:bg-green-700 text-white rounded-lg"
->
-  Edit Profile
-</button>
-    )}
-  </div>
-            </form>
-          </div>
 
+              <div className="mb-4">
+                <label className="block text-zinc-600 dark:text-zinc-300">Languages</label>
+                <input
+                  type="text"
+                  name="languages"
+                  value={profile.languages}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  readOnly={!editMode}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-zinc-600 dark:text-zinc-300">Activities</label>
+                <input
+                  type="text"
+                  name="activities"
+                  value={profile.activities}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  readOnly={!editMode}
+                />
+              </div>
+
+              <div className="p-4 flex justify-between">
+                {editMode ? (
+                  <button
+                    type="submit"
+                    className="py-2 px-4 bg-blue-400 hover:bg-blue-700 text-white rounded-lg"
+                  >
+                    Update Profile
+                  </button>
+                ) : (
+                  
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setEditMode(true);
+                    }}
+                    className="py-2 px-4 bg-green-400 hover:bg-green-700 text-white rounded-lg"
+                  >
+                    Edit Profile
+                  </button>
+          
+                )}
+           <div>
+          <button
+    onClick={() => navigate("/kyc")}
+    className="py-2 px-4 bg-purple-500 hover:bg-purple-700 text-white rounded-lg"
+  >
+    KYC Form
+  </button>
+          </div>
+              </div>
+            
+            </form>
+           
+          </div>
+        
           <div className="bg-deepPurple-50 md:col-span-1 bg-white dark:bg-zinc-700 p-4 border border-zinc-200 dark:border-zinc-600">
             <div className="flex items-center mb-4">
               <div className="text-lg text-gray-700 dark:text-gray-300">Reviews</div>

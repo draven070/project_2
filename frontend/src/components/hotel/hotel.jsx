@@ -106,7 +106,7 @@ const HotelList = () => {
           >
        
             <img
-              src={`http://localhost:5000${hotel.image}` || "https://via.placeholder.com/300"}
+              src={`http://localhost:3000${hotel.image}` || "https://via.placeholder.com/300"}
               alt={hotel.hotel_name}
               className="w-full h-64 object-cover"
             />

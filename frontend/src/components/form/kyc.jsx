@@ -27,146 +27,88 @@ const KYCForm = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const validateForm = () => {
     let errors = {};
+    
     if (!formData.name.trim()) {
       errors.name = 'Name is required';
+    } else if (!/^[A-Za-z ]+$/.test(formData.name)) {
+      errors.name = 'Name can only contain letters';
     }
+    
     if (!formData.citizenshipNumber.trim()) {
       errors.citizenshipNumber = 'Citizenship Number is required';
+    } else if (!/^[0-9-/]+$/.test(formData.citizenshipNumber)) {
+      errors.citizenshipNumber = 'Only numbers, "/", and "-" are allowed';
+    }
+    
+    if (!formData.image) {
+      errors.image = 'Profile image is required';
+    }
+
+    if (!formData.citizenshipPhoto) {
+      errors.citizenshipPhoto = 'Citizenship photo is required';
     }
 
     setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
-    if (Object.keys(errors).length === 0) {
-      try {
-        const formDataToSend = new FormData();
-        formDataToSend.append('name', formData.name);
-        formDataToSend.append('citizenshipNumber', formData.citizenshipNumber);
-        formDataToSend.append('image', formData.image);
-        formDataToSend.append('citizenshipPhoto', formData.citizenshipPhoto);
-        if (formData.cv) {
-          formDataToSend.append('cv', formData.cv);
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-        const response = await fetch('http://localhost:3000/api/kyc/create', {
-          method: 'POST',
-          body: formDataToSend,
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          setErrors({ api: errorData.message });
-          return;
-        }
-
-        const data = await response.json();
-        setSuccessMessage('KYC form submitted successfully!');
-        setFormData({
-          name: '',
-          citizenshipNumber: '',
-          image: null,
-          citizenshipPhoto: null,
-          cv: null,
-        });
-      } catch (error) {
-        setErrors({ api: 'An error occurred. Please try again.' });
-        console.error('Error:', error);
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('citizenshipNumber', formData.citizenshipNumber);
+      formDataToSend.append('image', formData.image);
+      formDataToSend.append('citizenshipPhoto', formData.citizenshipPhoto);
+      if (formData.cv) {
+        formDataToSend.append('cv', formData.cv);
       }
+
+      const response = await fetch('http://localhost:3000/api/kyc/create', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrors({ api: errorData.message });
+        return;
+      }
+
+      setSuccessMessage('KYC form submitted successfully!');
+      setFormData({ name: '', citizenshipNumber: '', image: null, citizenshipPhoto: null, cv: null });
+    } catch (error) {
+      setErrors({ api: 'An error occurred. Please try again.' });
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">KYC Form</h2>
-
-      {successMessage && (
-        <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
-          <p className="font-bold">Success</p>
-          <p>{successMessage}</p>
+    <div className="max-w-4xl mx-auto p-6 bg-gray-100 shadow-lg rounded-lg">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">KYC Form</h2>
+      {successMessage && <div className="bg-green-100 p-4 text-green-700 mb-4">{successMessage}</div>}
+      {errors.api && <div className="bg-red-100 p-4 text-red-700 mb-4">{errors.api}</div>}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required className="w-full p-2 border border-gray-300 rounded" />
+        <input type="text" name="citizenshipNumber" placeholder="Citizenship Number" value={formData.citizenshipNumber} onChange={handleChange} required className="w-full p-2 border border-gray-300 rounded" />
+        <div>
+          <label className="block mb-1">Image *</label>
+          <input type="file" name="image" accept="image/*" onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+          {errors.image && <p className="text-red-500 text-xs">{errors.image}</p>}
         </div>
-      )}
-
-      {errors.api && (
-        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-          <p className="font-bold">Error</p>
-          <p>{errors.api}</p>
+        <div>
+          <label className="block mb-1">Citizenship Photo *</label>
+          <input type="file" name="citizenshipPhoto" accept="image/*" onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
+          {errors.citizenshipPhoto && <p className="text-red-500 text-xs">{errors.citizenshipPhoto}</p>}
         </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name *</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${errors.name ? 'border-red-500' : ''}`}
-          />
-          {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
+        <div>
+          <label className="block mb-1">CV (Optional)</label>
+          <input type="file" name="cv" accept=".pdf,.doc,.docx" onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
         </div>
-
-        <div className="mb-4">
-          <label htmlFor="citizenshipNumber" className="block text-sm font-medium text-gray-700">Citizenship Number *</label>
-          <input
-            type="text"
-            id="citizenshipNumber"
-            name="citizenshipNumber"
-            value={formData.citizenshipNumber}
-            onChange={handleChange}
-            className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${errors.citizenshipNumber ? 'border-red-500' : ''}`}
-          />
-          {errors.citizenshipNumber && <p className="text-xs text-red-500 mt-1">{errors.citizenshipNumber}</p>}
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image *</label>
-          <input
-            type="file"
-            id="image"
-            name="image"
-            accept="image/*"
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="citizenshipPhoto" className="block text-sm font-medium text-gray-700">Citizenship Photo *</label>
-          <input
-            type="file"
-            id="citizenshipPhoto"
-            name="citizenshipPhoto"
-            accept="image/*"
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="cv" className="block text-sm font-medium text-gray-700">CV (Optional)</label>
-          <input
-            type="file"
-            id="cv"
-            name="cv"
-            accept=".pdf,.doc,.docx"
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
-        </div>
-
-        <div className="mt-6">
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          >
-            Submit KYC
-          </button>
-        </div>
+        <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Submit KYC</button>
       </form>
     </div>
   );

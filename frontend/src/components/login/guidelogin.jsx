@@ -91,7 +91,7 @@ function Login() {
             type="submit"
           >
             
-            Login In
+            Login
           </button>
           <p className="text-sm text-gray-600 mt-4 text-center">
           Don't have an account? 

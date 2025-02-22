@@ -12,7 +12,7 @@ import Dashboard from "./admin/Dashboard";
 import GuideVerification from "./admin/GuideVerification";
 import UserSection from "./admin/UserSection";
 import GuideSection from "./admin/GuideSection";
-import Form from "./components/form/form";
+import Form from "./components/form/form.jsx";
 import Sidebar from "./components/dashboard/sidebar";
 import Profileform from "./components/form/profileForm";
 import Notification from "./components/notification/notification.jsx";
@@ -20,7 +20,7 @@ import Hotel from "./components/hotel/hotel.jsx";
 import Tourist from "./components/dashboard/tourist.jsx";
 import KYCForm from "./components/form/kyc";
 import Dash from "./components/dashboard/dash";
-
+import AdminDashboard from "./components/AdminDashboard.jsx"
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import Blog from "./components/blog/component/Blog";
 import Singleblog from "./components/blog/component/Singleblog";
@@ -28,6 +28,11 @@ import Widget from "./components/dashboard/dash";
 import Request from "./components/request/request";
 import AdminDashboardUsers from "./components/AdminDashboardUsers.jsx";
 import AdminDashboardTourists from "./components/AdminDashboardTourists.jsx"
+import Guide from './components/homecomponents/Topuser.jsx'
+import Touristform from "./components/form/touristform.jsx";
+import AboutUs from "./components/homecomponents/aboutus.jsx";
+import AdminLogin from "./components/login/adminlogin.jsx";
+
 
 export default function App() {
   return (
@@ -55,12 +60,18 @@ export default function App() {
         <Route path="/verify/:id" element={<GuideVerification />} />
         <Route path="/sidebar" element={<Sidebar />} />
         <Route path="/profileform" element={<Profileform />} />
+        <Route path="/touristform" element={<Touristform />} />
         <Route path="/request" element={<Request />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/tourist" element={<Tourist />} />
         <Route path="/hotel" element={<Hotel />} />
+        <Route path="/guide" element={<Guide />} />
+        
         <Route path="/admin/users" element={<AdminDashboardUsers />} />
         <Route path="/admin/tourists" element={<AdminDashboardTourists />} />
+        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/adminlogin" element={<AdminLogin />} />
+        
         {/* <Route
             path="/admin"
             element={

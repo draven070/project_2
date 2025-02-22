@@ -35,8 +35,10 @@ function Login() {
       console.error('Error logging in:', error);
       setError('Error logging in. Please try again later.');
     }
+    
   };
-  
+   
+
 
   return (
     <section className="h-screen flex flex-col md:flex-row justify-center space-y-10 md:space-y-0 md:space-x-16 items-center my-2 mx-5 md:mx-0 md:my-0">
@@ -50,7 +52,7 @@ function Login() {
         <form onSubmit={handleLogin}>
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
           
-            Signin as a Traveler
+            Sign as a Traveler
 
          </h2>
          <div className="mb-4">
@@ -78,7 +80,7 @@ function Login() {
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
             type="submit"
           >
-            Login In
+            Login
           </button>
           <p className="text-sm text-gray-600 mt-4 text-center">
           Don't have an account? 

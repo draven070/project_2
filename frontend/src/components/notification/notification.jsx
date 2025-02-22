@@ -19,7 +19,7 @@ const TripRequestNotification = () => {
           setLoading(false); // Stop loading
         })
         .catch(() => {
-          setError('Error fetching notifications');
+          setError('No notifications found for this email');
           setLoading(false); // Stop loading
         });
     } else {
