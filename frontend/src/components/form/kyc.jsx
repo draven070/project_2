@@ -1,115 +1,169 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const KYCForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     citizenshipNumber: '',
-    image: null,
+    profileImage: null,
     citizenshipPhoto: null,
     cv: null,
   });
 
-  const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState('');
+  const [preview, setPreview] = useState({
+    profileImage: null,
+    citizenshipPhoto: null,
+    cv: null,
+  });
+
+  const userEmail = localStorage.getItem('email'); // Retrieve email from localStorage
+
+  useEffect(() => {
+    if (!userEmail) {
+      alert('No email found. Please log in first.');
+    }
+  }, [userEmail]);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (files) {
-      setFormData({
-        ...formData,
-        [name]: files[0],
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const validateForm = () => {
-    let errors = {};
-    
-    if (!formData.name.trim()) {
-      errors.name = 'Name is required';
-    } else if (!/^[A-Za-z ]+$/.test(formData.name)) {
-      errors.name = 'Name can only contain letters';
-    }
-    
-    if (!formData.citizenshipNumber.trim()) {
-      errors.citizenshipNumber = 'Citizenship Number is required';
-    } else if (!/^[0-9-/]+$/.test(formData.citizenshipNumber)) {
-      errors.citizenshipNumber = 'Only numbers, "/", and "-" are allowed';
-    }
-    
-    if (!formData.image) {
-      errors.image = 'Profile image is required';
-    }
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, [e.target.name]: file });
 
-    if (!formData.citizenshipPhoto) {
-      errors.citizenshipPhoto = 'Citizenship photo is required';
-    }
-
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
+    // Generate a preview URL for the file
+    setPreview({ ...preview, [e.target.name]: URL.createObjectURL(file) });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+
+    if (!userEmail) {
+      alert('User email is required.');
+      return;
+    }
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('citizenshipNumber', formData.citizenshipNumber);
+    formDataToSend.append('profileImage', formData.profileImage);
+    formDataToSend.append('citizenshipPhoto', formData.citizenshipPhoto);
+    formDataToSend.append('cv', formData.cv);
+    formDataToSend.append('email', userEmail); // Include email in request
 
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('citizenshipNumber', formData.citizenshipNumber);
-      formDataToSend.append('image', formData.image);
-      formDataToSend.append('citizenshipPhoto', formData.citizenshipPhoto);
-      if (formData.cv) {
-        formDataToSend.append('cv', formData.cv);
-      }
+      const response = await axios.post(
+        'http://localhost:3000/api/kyc/create',
+        formDataToSend,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
 
-      const response = await fetch('http://localhost:3000/api/kyc/create', {
-        method: 'POST',
-        body: formDataToSend,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        setErrors({ api: errorData.message });
-        return;
-      }
-
-      setSuccessMessage('KYC form submitted successfully!');
-      setFormData({ name: '', citizenshipNumber: '', image: null, citizenshipPhoto: null, cv: null });
+      alert(response.data.message);
     } catch (error) {
-      setErrors({ api: 'An error occurred. Please try again.' });
+      console.error('Error submitting KYC:', error);
+      alert('Error submitting KYC form');
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gray-100 shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">KYC Form</h2>
-      {successMessage && <div className="bg-green-100 p-4 text-green-700 mb-4">{successMessage}</div>}
-      {errors.api && <div className="bg-red-100 p-4 text-red-700 mb-4">{errors.api}</div>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required className="w-full p-2 border border-gray-300 rounded" />
-        <input type="text" name="citizenshipNumber" placeholder="Citizenship Number" value={formData.citizenshipNumber} onChange={handleChange} required className="w-full p-2 border border-gray-300 rounded" />
-        <div>
-          <label className="block mb-1">Image *</label>
-          <input type="file" name="image" accept="image/*" onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
-          {errors.image && <p className="text-red-500 text-xs">{errors.image}</p>}
-        </div>
-        <div>
-          <label className="block mb-1">Citizenship Photo *</label>
-          <input type="file" name="citizenshipPhoto" accept="image/*" onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
-          {errors.citizenshipPhoto && <p className="text-red-500 text-xs">{errors.citizenshipPhoto}</p>}
-        </div>
-        <div>
-          <label className="block mb-1">CV (Optional)</label>
-          <input type="file" name="cv" accept=".pdf,.doc,.docx" onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" />
-        </div>
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Submit KYC</button>
-      </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-white shadow-md rounded-lg p-6 max-w-lg w-full">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+          KYC Form Submission
+        </h2>
+        <p className="text-center text-gray-600 mb-6">User Email: <span className="font-semibold">{userEmail}</span></p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <input
+            type="text"
+            name="citizenshipNumber"
+            placeholder="Citizenship Number"
+            value={formData.citizenshipNumber}
+            onChange={handleChange}
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          {/* Profile Image Upload */}
+          <div className="border border-gray-300 p-3 rounded-lg">
+            <label className="block text-gray-700 font-semibold mb-1">
+              Profile Image:
+            </label>
+            <input
+              type="file"
+              name="profileImage"
+              accept="image/*"
+              onChange={handleFileChange}
+              required
+              className="w-full p-2 border rounded-lg"
+            />
+            {preview.profileImage && (
+              <img
+                src={preview.profileImage}
+                alt="Profile Preview"
+                className="mt-2 w-20 h-20 rounded-lg shadow"
+              />
+            )}
+          </div>
+
+          {/* Citizenship Photo Upload */}
+          <div className="border border-gray-300 p-3 rounded-lg">
+            <label className="block text-gray-700 font-semibold mb-1">
+              Citizenship Photo:
+            </label>
+            <input
+              type="file"
+              name="citizenshipPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+              required
+              className="w-full p-2 border rounded-lg"
+            />
+            {preview.citizenshipPhoto && (
+              <img
+                src={preview.citizenshipPhoto}
+                alt="Citizenship Preview"
+                className="mt-2 w-20 h-20 rounded-lg shadow"
+              />
+            )}
+          </div>
+
+          {/* CV Upload */}
+          <div className="border border-gray-300 p-3 rounded-lg">
+            <label className="block text-gray-700 font-semibold mb-1">CV (Optional):</label>
+            <input
+              type="file"
+              name="cv"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileChange}
+              className="w-full p-2 border rounded-lg"
+            />
+            {preview.cv && (
+              <p className="text-green-600 font-medium mt-1">File selected</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition"
+          >
+            Submit KYC
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

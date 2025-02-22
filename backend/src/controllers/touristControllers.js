@@ -1,6 +1,6 @@
 import Tourist from "../models/touristModel.js"; // Importing the Tourist model
 import bcrypt from "bcrypt";
-import generateTokenSetCookie from "../utils/generateToken.js";
+import { generateJWT } from "../utils/generateToken.js";
 
 const signupTourist = async (req, res) => {
   console.log(req.body);
@@ -28,19 +28,19 @@ const signupTourist = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
-      role: "tourist" // Assuming default role is "tourist"
+      role: "tourist", // Assuming default role is "tourist"
     });
 
     await newTourist.save();
 
-    generateTokenSetCookie(newTourist._id, res);
+    generateJwt(newTourist._id, res);
 
     res.status(200).json({
       message: "Tourist created successfully",
       _id: newTourist._id,
       fullName: newTourist.fullName,
       email: newTourist.email,
-      role: newTourist.role
+      role: newTourist.role,
     });
   } catch (error) {
     console.error(error.message);
@@ -51,37 +51,39 @@ const signupTourist = async (req, res) => {
 };
 
 const loginTourist = async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      const tourist = await Tourist.findOne({ email });
-  
-      if (!tourist) {
-        return res.status(400).json({ message: 'Invalid email or password' });
-      }
-  
-      const isPasswordCorrect = await bcrypt.compare(password, tourist.password);
-  
-      if (!isPasswordCorrect) {
-        return res.status(400).json({ message: 'Invalid email or password' });
-      }
-  
-      const token = generateTokenSetCookie(tourist._id, res);
-      console.log('Generated Token:', token); // Log the token
-  
-      res.status(200).json({
-        message: 'Login successful',
-        token,
-        _id: tourist._id,
-        fullName: tourist.fullName,
-        email: tourist.email,
-        role: tourist.role // Ensure role is included
-      });
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).json({ message: 'Internal server error', error: error.message });
+  try {
+    const { email, password } = req.body;
+    const tourist = await Tourist.findOne({ email });
+
+    if (!tourist) {
+      return res.status(400).json({ message: "Invalid email or password" });
     }
-  };
-  
+
+    const isPasswordCorrect = await bcrypt.compare(password, tourist.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const token = generateJWT(tourist._id, res);
+    console.log("Generated Token:", token); // Log the token
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      _id: tourist._id,
+      fullName: tourist.fullName,
+      email: tourist.email,
+      role: tourist.role, // Ensure role is included
+    });
+  } catch (error) {
+    console.error(error.message);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
 const logoutTourist = async (req, res) => {
   try {
     res.cookie("jwt", "", { maxAge: 0 });
@@ -93,7 +95,6 @@ const logoutTourist = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
-
 
 const updateTourist = async (req, res) => {
   try {
@@ -145,4 +146,4 @@ const updateTourist = async (req, res) => {
   }
 };
 
-export { signupTourist, loginTourist, logoutTourist , updateTourist };
+export { signupTourist, loginTourist, logoutTourist, updateTourist };

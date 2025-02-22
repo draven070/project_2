@@ -8,10 +8,10 @@ const kycSchema = new mongoose.Schema({
      required: true
      },
   citizenshipNumber: { 
-    type: String, 
+    type: Number, 
     required: true
  },
-  image: {
+ profileImage: {
      type: String,
       required: true
      },
@@ -21,8 +21,11 @@ const kycSchema = new mongoose.Schema({
   cv: { 
     type: String 
 },
+email: { 
+  type: String 
+},
 }, { timestamps: true });
 
 const KYC = mongoose.model('KYC', kycSchema);
 
-export default KYC;
+export default KYC;
