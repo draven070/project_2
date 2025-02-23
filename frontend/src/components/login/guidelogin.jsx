@@ -29,13 +29,14 @@ function Login() {
         localStorage.setItem('email', data.email);          // Save user role to local storage
 
         // Fetch the user's data to check the form status
-        const userResponse = await fetch(`http://localhost:3000/api/user/users/${data._id}`, {
+        const userResponse = await fetch(`http://localhost:3000/api/user/users/${data.email}`, {
           headers: {
             'Authorization': `Bearer ${data.token}`, // Send the token in the header
           },
         });
 
         const userData = await userResponse.json();
+
         if (userData.form === 'unsubmitted') {
           navigate('/profileform');  // Redirect to the profile form page
         } else {

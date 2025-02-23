@@ -47,7 +47,6 @@ const TripRequestNotification = () => {
             <p><strong>Guide:</strong> {notification.guideEmail}</p>
             <p><strong>Tourist:</strong> {notification.touristEmail}</p>
             <p><strong>Message:</strong> {notification.message}</p>
-            <p><strong>Status:</strong> {notification.isRead ? 'Read' : 'Unread'}</p>
 
             {/* Notification Status */}
             <div className="mt-4">

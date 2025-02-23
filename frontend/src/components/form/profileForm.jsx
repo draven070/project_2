@@ -44,7 +44,8 @@ const ProfileForm = () => {
     data.append("aboutMeContent", formData.aboutMeContent);
     data.append("languages", formData.languages);
     data.append("activities", formData.activities);
-
+    data.append("profileImage",formData.profileImage);
+    data.append("coverImage",formData.coverImage);
     // Append files if they are selected
     Object.keys(files).forEach((key) => {
       if (files[key]) {

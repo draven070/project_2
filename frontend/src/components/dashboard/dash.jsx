@@ -16,40 +16,62 @@ const Widget = () => {
     name: '',
     location: '',
     profileImage: '',
-    backgroundImage: '',
+    coverImage: '',
     quote: '',
     languages: '',
     activities: '',
+    form:''
   });
-
+  const [status,setStatus] = useState()
   const [editMode, setEditMode] = useState(false);
   const { userId } = useParams();
 
-  const reviews = [
-    { id: 1, text: 'Great experience!', author: 'John Doe' },
-    { id: 2, text: 'Awesome service!', author: 'Jane Smith' },
-    { id: 3, text: 'Very professional.', author: 'Alice Johnson' },
-  ];
-
+  const [reviews, setReviews] = useState([]);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        fetchReviewData();
         const email = localStorage.getItem('email');
+        const response1 = await axios.get(`http://localhost:3000/api/user/users/${email}`)
+        const data = response1.data;
+       setStatus(data.formStatus);
+       console.log("status",status)
         const response = await axios.get(`http://localhost:3000/api/profile/profile/${email}`);
+       
         setProfile(response.data);
+
       } catch (error) {
         console.error('Error fetching profile:', error);
       }
     };
     fetchProfile();
   }, []);
-
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProfile((prevProfile) => ({
       ...prevProfile,
       [name]: value,
     }));
+  };
+  const fetchReviewData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/review/guide/${email}`);
+      console.log("Review Data Response:", response.data);
+
+      // Ensure response.data is an array or extract the array if inside an object
+      if (Array.isArray(response.data)) {
+        setReviews(response.data);
+      } else if (Array.isArray(response.data.reviews)) {
+        setReviews(response.data.reviews);
+      } else {
+        console.error("Unexpected API response format:", response.data);
+        setReviews([]); // Fallback to empty array
+      }
+    } catch (error) {
+      console.error('Error fetching review data:', error);
+      setReviews([]); // Set to empty array on error
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -77,8 +99,8 @@ const Widget = () => {
             <div className="relative">
               <img
                 src={
-                  profile.backgroundImage
-                    ? `http://localhost:3000/${profile.backgroundImage}`
+                  profile.coverImage
+                    ? `http://localhost:3000/${profile.coverImage}`
                     : defaultBackgroundImage
                 }
                 alt="Profile background"
@@ -159,14 +181,17 @@ const Widget = () => {
                   </button>
           
                 )}
-           <div>
-          <button
-    onClick={() => navigate("/kyc")}
-    className="py-2 px-4 bg-purple-500 hover:bg-purple-700 text-white rounded-lg"
-  >
-    KYC Form
-  </button>
-          </div>
+         {status !== "verified" && (
+  <div>
+    <button
+      onClick={() => navigate("/kyc")}
+      className="py-2 px-4 bg-purple-500 hover:bg-purple-700 text-white rounded-lg"
+    >
+      KYC Form
+    </button>
+  </div>
+)}
+
               </div>
             
             </form>

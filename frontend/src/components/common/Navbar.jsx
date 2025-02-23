@@ -116,19 +116,14 @@ export const Navbar = () => {
                     {userRole !== "admin" && (
                       <>
                         <li>
-                          <button
-                            className="block px-4 py-2 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-700"
-                            onClick={() => {
-                              // Navigate to the correct profile page based on user role
-                              if (userRole === "guide") {
-                                navigate("/dash/:email"); // Assuming the guide profile route is '/guide/profile'
-                              } else {
-                                navigate("/tourist"); // Default profile for other users
-                              }
-                            }}
-                          >
+                                    {userRole === "guide" && (
+                                                   <button
+                                          className="block px-4 py-2 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    onClick={() => navigate(`/dash/${localStorage.getItem("email")}`)}
+                                  >
                             Profile
                           </button>
+                           )}
                         </li>
                         <li>
                           <button
@@ -178,13 +173,13 @@ export const Navbar = () => {
                 </Link>
               </div>
               {/* Sign In Buttons */}
-              <button
+              {/* <button
                 type="button"
                 className="text-white bg-green-500 hover:bg-green-700 focus:ring-2 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-700"
                 onClick={() => navigate("/adminlogin")}
               >
                 Admin
-              </button>
+              </button> */}
               <button
                 type="button"
                 className="text-white bg-green-500 hover:bg-green-700 focus:ring-2 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-700"

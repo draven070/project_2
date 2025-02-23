@@ -7,20 +7,6 @@ const HotelList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // List of unique locations
-  const locations = [
-    "Pokhara, Nepal",
-    "Lalitpur, Nepal",
-    "Chitwan, Nepal",
-    "Lumbini, Nepal",
-    "Nagarkot, Nepal",
-    "Mechinagar, Nepal",
-    "Ilam, Nepal",
-    "Dharan, Nepal",
-    "Damak, Nepal",
-    
-  ];
-
   // Fetch all hotels initially
   const fetchHotels = async () => {
     setLoading(true);
@@ -38,10 +24,20 @@ const HotelList = () => {
     }
   };
 
+  // Validate location format (e.g., "Mechinagar, Nepal")
+  const isValidLocation = (input) => {
+    const pattern = /^[A-Za-z]+(?:\s[A-Za-z]+)*,\sNepal$/;
+    return pattern.test(input);
+  };
+
   // Fetch recommended hotels based on location
   const fetchRecommendations = async () => {
     if (!location.trim()) {
-      setError("Please select a location.");
+      alert("Please enter a location.");
+      return;
+    }
+    if (!isValidLocation(location)) {
+      alert("Invalid location format. Please enter in 'City, Nepal' format.");
       return;
     }
 
@@ -72,20 +68,15 @@ const HotelList = () => {
     <div className="container mx-auto p-8">
       <h2 className="text-3xl font-semibold text-center mb-6">Find Hotels Based on Location</h2>
 
-      {/* Dropdown for Location */}
+      {/* Manual Input for Location */}
       <div className="flex justify-center mb-6">
-        <select
+        <input
+          type="text"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
+          placeholder="Enter location (e.g., Mechinagar, Nepal)"
           className="border rounded-lg p-2 text-lg w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">Select a location</option>
-          {locations.map((loc, index) => (
-            <option key={index} value={loc}>
-              {loc}
-            </option>
-          ))}
-        </select>
+        />
         <button
           onClick={fetchRecommendations}
           className="ml-2 px-6 py-2 bg-green-600 text-white rounded-lg text-lg font-semibold hover:bg-green-700 transition-all"
@@ -104,7 +95,6 @@ const HotelList = () => {
             key={index}
             className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl"
           >
-       
             <img
               src={`http://localhost:3000${hotel.image}` || "https://via.placeholder.com/300"}
               alt={hotel.hotel_name}

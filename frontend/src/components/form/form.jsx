@@ -15,20 +15,17 @@ export default function Form() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
-    // Extract email from URL query string
     const queryParams = new URLSearchParams(location.search);
-    const guideEmail = queryParams.get('email'); // Guide email from URL
+    const guideEmail = queryParams.get('email');
 
     useEffect(() => {
         const userEmail = localStorage.getItem('email');
         const userRole = localStorage.getItem('role');
 
-        // If no email found in localStorage, redirect to login
         if (!userEmail) {
             navigate('/login');
         }
 
-        // If role is not 'tourist', show an alert and redirect to home
         if (userRole !== 'tourist') {
             alert('Only tourists can create a trip.');
             navigate('/');
@@ -54,11 +51,19 @@ export default function Form() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setError(null);
+
+        if (!locationInput || !dateFrom || !dateTo || !numPeople || !priceBid || !guideEmail) {
+            setError('All fields are required.');
+            return;
+        }
 
         const touristEmail = localStorage.getItem('email');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        if (!guideEmail) {
-            setError('The provided guide email is invalid.');
+        if (dateFrom < today || (dateTo && dateTo < today)) {
+            setError('Booking cannot be made for past dates.');
             return;
         }
 
@@ -82,8 +87,7 @@ export default function Form() {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                setError(errorData.message);
+                setError('An error occurred while submitting your trip.');
                 return;
             }
 
@@ -109,6 +113,7 @@ export default function Form() {
                     name="location"
                     value={locationInput}
                     onChange={handleInputChange}
+                    required
                     className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
                 />
             </div>
@@ -119,6 +124,8 @@ export default function Form() {
                     <DatePicker
                         selected={dateFrom}
                         onChange={date => setDateFrom(date)}
+                        minDate={new Date()}
+                        required
                         className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
                     />
                 </div>
@@ -127,6 +134,8 @@ export default function Form() {
                     <DatePicker
                         selected={dateTo}
                         onChange={date => setDateTo(date)}
+                        minDate={dateFrom}
+                        required
                         className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
                     />
                 </div>
@@ -138,6 +147,7 @@ export default function Form() {
                     name="numPeople"
                     value={numPeople}
                     onChange={handleInputChange}
+                    required
                     className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
                 >
                     <option>Just me</option>
@@ -156,6 +166,7 @@ export default function Form() {
                     name="priceBid"
                     value={priceBid}
                     onChange={handleInputChange}
+                    required
                     className="w-full p-2 border rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-white"
                 />
             </div>
