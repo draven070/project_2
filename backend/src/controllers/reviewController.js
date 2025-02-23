@@ -1,21 +1,45 @@
 // Import necessary modules
 import Review from '../models/reviewModel.js'; // Adjust path as needed
-import User from '../models/userModels.js'; // Assuming you have a User model
+import Tourist from '../models/touristModel.js'; // Import the correct model
+import User from '../models/userModels.js';
+// Import the User model
 
-// Controller to add a review
-const addReview = async (req, res) => {
+// Controller to get reviews by guide's email
+const getReviewsByGuideEmail = async (req, res) => {
   try {
-    // Destructure review data from request body
-    const { review, rating, guideId } = req.body;
+    const { email } = req.params;
 
-    // Ensure user is authenticated (req.user should be set by protectedRoutes middleware)
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ success: false, message: "User not authenticated" });
+    // Find guide by email
+    const guide = await User.findOne({ email });
+
+    if (!guide) {
+      return res.status(404).json({ success: false, message: "Guide not found" });
     }
 
-    // Find user by ID to get user's fullName (or any other required user details)
-    const user = await User.findById(req.user._id).select('fullName');
-    if (!user) {
+    // Fetch reviews where guideId matches the guide's _id
+    const reviews = await Review.find({ guide: guide._id })
+      .populate("user", "fullName email"); // Populate user details
+
+    res.status(200).json({ success: true, reviews });
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+const addReview = async (req, res) => {
+  try {
+    const { review, rating, guideId } = req.body;
+    const { email } = req.params;
+
+    console.log("Email from request:", email);
+
+    // Find the tourist by email
+    const tourist = await Tourist.findOne({ email });
+    console.log("Found User:", tourist);
+
+    // Fix: Check for tourist, not "user"
+    if (!tourist) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
@@ -23,9 +47,11 @@ const addReview = async (req, res) => {
     const newReview = new Review({
       review,
       rating,
-      user: req.user._id, // Assigning the user ID to the review
-      guide: guideId, // Assuming guideId is provided in the request body
+      user: tourist._id, // Fix: Use tourist._id
+      guide: guideId,
     });
+
+    console.log(newReview);
 
     // Save the new review to the database
     const savedReview = await newReview.save();
@@ -33,8 +59,8 @@ const addReview = async (req, res) => {
     // Respond with success message and the saved review object
     res.status(201).json({
       success: true,
-      message: 'Review added successfully',
-      review: { ...savedReview.toObject(), userName: user.fullName }, // Adding userName field to the response
+      message: "Review added successfully",
+      review: { ...savedReview.toObject(), userName: tourist.fullName }, // Fix: Use tourist.fullName
     });
   } catch (error) {
     console.error("Error in addReview controller:", error);
@@ -42,4 +68,4 @@ const addReview = async (req, res) => {
   }
 };
 
-export { addReview };
+export { addReview,getReviewsByGuideEmail };

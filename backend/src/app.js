@@ -18,7 +18,8 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import recommendRoutes from "./routes/recommendRoutes.js"
-
+import addHotels from "./routes/addHotels.js";
+import deletehotels from "./routes/deleteHotels.js";
 
 
 
@@ -65,7 +66,8 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/hotel", hotelRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/notification", notificationRoutes);
-
+app.use("/api/deletehotel", deletehotels);
+app.use("/api/addhotels", addHotels);
 app.use("/api/admin", adminRoutes);
 app.use("/api/recommend",recommendRoutes);
 // Export the app for testing or other uses

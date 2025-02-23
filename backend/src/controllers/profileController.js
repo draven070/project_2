@@ -22,9 +22,10 @@ const getProfileDataW = async (req, res) => {
   };
 const getProfileData = async (req, res) => {
   try {
-    const email = req.params.email; // Assuming email is passed as a URL parameter
+    const email = req.params.email; 
+    console.log(email);
     const profile = await Profile.findOne({ email });
-
+    console.log(profile);
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
     }
@@ -89,6 +90,7 @@ const updateProfileData = async (req, res) => {
 // Create or update a profile
 const createProfileData = async (req, res) => {
   try {
+
     const {
       email,
       name,
@@ -99,7 +101,8 @@ const createProfileData = async (req, res) => {
       languages,
       activities,
     } = req.body;
-
+    const guideUser = await User.findOne({email});
+    const {guide}=guideUser._id;
     if (!email || !name || !location || !quote || !aboutMeTitle || !aboutMeContent || !languages || !activities) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -108,6 +111,7 @@ const createProfileData = async (req, res) => {
     const coverImagePath = req.files?.coverImage ? req.files.coverImage[0].path : "";
 
     const profileData = {
+      guide,
       email,
       name,
       location,

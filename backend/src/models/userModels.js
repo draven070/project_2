@@ -36,7 +36,21 @@ const userSchema = new Schema({
     type: String,
     enum: ['submitted', 'unsubmitted'],
     default: 'unsubmitted',  // Default value is unsubmitted
-  }
+  },
+  formStatus: {
+    type: String,
+    enum: ['verified', 'unverified'],
+    default: 'unverified',  // Default value is unsubmitted
+  },
+  Profile:{
+    type: mongoose.Schema.Types.ObjectId,
+      ref: 'Profile',
+  },
+  // reviews:{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Review',
+
+  // }
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);

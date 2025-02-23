@@ -1,15 +1,15 @@
-import jwt from 'jsonwebtoken';
 import User from '../models/userModels.js';
 import {} from 'dotenv/config';
-
+import { verifyJWT } from "../utils/generateToken.js";
 const protectedRoutes = async (req, res, next) => {
     try {
         // dotenv.config();
-        const token = req.cookies.jwt;
+        const { token = " "} = req.headers;
         if (!token) {
             return res.status(404).json({ message: "Token not found" });
         }
-        const decoded = jwt.verify(token,process.env.JWT_SECRET_KEY||"secretkey");
+        console.log(token);
+        const decoded = verifyJWT(token);
         console.log("this is the decoded",decoded)
         if (!decoded) {
             return res.status(401).json({ message: "Unauthorized: Invalid token" });

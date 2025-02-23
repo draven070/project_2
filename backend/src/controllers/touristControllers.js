@@ -11,7 +11,7 @@ const signupTourist = async (req, res) => {
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
-
+    console.log(fullName, email, password, confirmPassword);
     if (!fullName || !email || !password || !confirmPassword) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -33,7 +33,7 @@ const signupTourist = async (req, res) => {
 
     await newTourist.save();
 
-    generateJwt(newTourist._id, res);
+    generateJWT(newTourist._id, res);
 
     res.status(200).json({
       message: "Tourist created successfully",

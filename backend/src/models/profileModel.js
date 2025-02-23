@@ -4,6 +4,8 @@ const { Schema, model } = mongoose;
 
 // Profile Schema
 const profileSchema = new Schema({
+  guide:{ type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',},
 email: { type: String, required: true },
 profileImage:{ type: String, required: true },
 coverImage: { type: String, required: true },

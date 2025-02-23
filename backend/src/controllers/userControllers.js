@@ -1,7 +1,7 @@
 import User from "../models/userModels.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import { generateJWT,verifyJWT } from "../utils/generateToken.js";
 // Function to generate JWT token
 const generateToken = (userId) => {
   return jwt.sign({ userId }, 'anup', {
@@ -45,7 +45,7 @@ const signupUser = async (req, res) => {
     await newUser.save();
 
     // Generate JWT token
-    const token = generateToken(newUser._id);
+    const token = generateJWT(newUser._id);
 
     // Set token in HTTP-only cookie
     res.cookie("accessToken", token, {
@@ -69,6 +69,7 @@ const signupUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(email, password)
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -83,7 +84,7 @@ const loginUser = async (req, res) => {
 
     // Generate JWT token
     const token = generateToken(user._id);
-
+    
     // Set token in HTTP-only cookie
     res.cookie("accessToken", token, {
       httpOnly: true,
@@ -126,9 +127,10 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserByemail= async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).populate("addedinfo reviews");
+    const email = req.params.email
+    const user = await User.findOne({email});
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -139,4 +141,4 @@ const getUserById = async (req, res) => {
   }
 };
 
-export { signupUser, loginUser, logoutUser, getAllUsers, getUserById };
+export { signupUser, loginUser, logoutUser, getAllUsers, getUserByemail };

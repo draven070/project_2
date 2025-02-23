@@ -13,7 +13,7 @@ const reviewSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Reference to User model
+    ref: 'Tourist', // Reference to User model
     required: true,
   },
   guide: {
